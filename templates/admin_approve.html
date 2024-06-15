@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Approval Page</title>
+    <style>
+        /* General styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+        h1 {
+            color: #333;
+        }
+        div {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        p {
+            margin: 5px 0;
+        }
+        /* Button styling */
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .approve {
+            background-color: #4CAF50; /* Green */
+            color: white;
+        }
+        .disapprove {
+            background-color: #f44336; /* Red */
+            color: white;
+        }
+        /* Responsive styling */
+        @media (max-width: 600px) {
+            div {
+                padding: 10px;
+            }
+            button {
+                width: 100%;
+                margin-top: 10px;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Pending User Registrations</h1>
+    {% for user in users %}
+        <div>
+            <p><strong>Username:</strong> {{ user.user.username }}</p>
+            <p><strong>Email:</strong> {{ user.user.email }}</p>
+            <form method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" name="approve_user" value="{{ user.id }}" class="approve">Approve</button>
+                <button type="submit" name="disapprove_user" value="{{ user.id }}" class="disapprove">Disapprove</button>
+            </form>
+        </div>
+        <hr>
+    {% endfor %}
+
+    <h1>Pending Employer Registrations</h1>
+    {% for employer in employers %}
+        <div>
+            <p><strong>Company Name:</strong> {{ employer.companyname }}</p>
+            <p><strong>Email:</strong> {{ employer.user.email }}</p>
+            <form method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" name="approve_employer" value="{{ employer.id }}" class="approve">Approve</button>
+                <button type="submit" name="disapprove_employer" value="{{ employer.id }}" class="disapprove">Disapprove</button>
+            </form>
+        </div>
+        <hr>
+    {% endfor %}
+</body>
+</html>

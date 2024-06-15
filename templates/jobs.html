@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* Basic CSS reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Container styles */
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
+/* Form title */
+.container h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+/* Form group styles */
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* Label styles */
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+/* Input styles */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Button styles */
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 14px;
+    }
+
+    button {
+        font-size: 14px;
+    }
+}
+
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Details Upload</title>
+    <link rel="stylesheet" href="">
+</head>
+<body>
+    <div class="container">
+        <h2>Upload Job Details</h2>
+        <form method="POST" id="jobForm" action="{% url 'add_job' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="jobTitle">Job Title:</label>
+                <input type="text" id="jobTitle" name="jobTitle" required>
+            </div>
+            <div class="form-group">
+                <label for="companyName">Company Name:</label>
+                <input type="text" id="companyName" name="companyName" required>
+            </div>
+            <div class="form-group">
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="location" required>
+            </div>
+            <div class="form-group">
+                <label for="jobSchedule">Job Schedule:</label>
+                <select id="jobSchedule" name="jobSchedule" required>
+                    <option value="full-time">Full-time</option>
+                    <option value="part-time">Part-time</option>
+                    <option value="contract">Contract</option>
+                    <option value="temporary">Temporary</option>
+                    <option value="internship">Internship</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="jobType">Job Type:</label>
+                <select id="jobType" name="jobType" required>
+                    <option value="online">Online</option>
+                    <option value="offline">Offline</option>
+                    <option value="hybrid">Hybrid</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="description">Job Description:</label>
+                <textarea id="description" name="description" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="jobexp">Experience:</label>
+                <select id="jobexp" name="jobexp" required>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4"> 4 </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="salary">Salary:</label>
+                <input type="text" id="salary" name="salary">
+            </div>
+            <!-- <div class="form-group">
+                <label for="file">Upload File:</label>
+                <input type="file" id="file" name="file">
+            </div> -->
+            <div class="form-group">
+                <label for="posted_on">Posted on</label>
+                <input type="date" id="posted_on" name="posted_on" required>
+            </div>
+            <button type="submit" >Submit</button>
+            
+        </form>
+    </div>
+    <script>
+        function validateForm(event) {
+            event.preventDefault();
+
+            // Clear previous error messages
+            var errorElements = document.getElementsByClassName('error');
+            while (errorElements[0]) {
+                errorElements[0].parentNode.removeChild(errorElements[0]);
+            }
+
+            var jobTitle = document.getElementById('jobTitle').value;
+            var companyName = document.getElementById('companyName').value;
+            var location = document.getElementById('location').value;
+            var jobSchedule = document.getElementById('jobSchedule').value;
+            var jobType = document.getElementById('jobType').value;
+            var description = document.getElementById('description').value;
+            var salary = document.getElementById('salary').value;
+            var file = document.getElementById('file').files[0];
+
+            var isValid = true;
+
+            if (jobTitle.trim() === '') {
+                showError('jobTitle', 'Job Title is required');
+                isValid = false;
+            }
+
+            if (companyName.trim() === '') {
+                showError('companyName', 'Company Name is required');
+                isValid = false;
+            }
+
+            if (location.trim() === '') {
+                showError('location', 'Location is required');
+                isValid = false;
+            }
+
+            if (jobSchedule.trim() === '') {
+                showError('jobSchedule', 'Job Schedule is required');
+                isValid = false;
+            }
+
+            if (jobType.trim() === '') {
+                showError('jobType', 'Job Type is required');
+                isValid = false;
+            }
+
+            if (description.trim() === '') {
+                showError('description', 'Job Description is required');
+                isValid = false;
+            }
+
+            if (salary.trim() !== '' && isNaN(salary)) {
+                showError('salary', 'Salary must be a number');
+                isValid = false;
+            }
+
+            if (file && file.size > 1048576) { // 1MB
+                showError('file', 'File size must be less than 1MB');
+                isValid = false;
+            }
+
+            if (isValid=true) {
+        if (confirm("Your submission was successful! Wait for admin approval, Thank you.")) {
+            document.getElementById('jobForm').submit();
+        }
+    }
+
+    return false;
+}
+
+        function showError(fieldId, message) {
+            var field = document.getElementById(fieldId);
+            var error = document.createElement('div');
+            error.className = 'error';
+            error.style.color = 'red';
+            error.textContent = message;
+            field.parentNode.appendChild(error);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stylish Navbar</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+     <!-- Bootstrap JS and dependencies -->
+     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        /* Custom CSS for the navbar */
+        .navbar-custom {
+            background-color: #052c53; /* Dark background */
+        }
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link {
+            color: #ffffff; /* White text */
+        }
+        .navbar-custom .nav-link:hover {
+            color: #f8f9fa; /* Lighter color on hover */
+        }
+        .navbar-toggler {
+            border: none;
+        }
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%288, 8, 8, 0.5%29' stroke-width='2' linecap='round' linejoin='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+        }
+        
+        .marquee-container {
+            display: flex;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .marquee-content {
+            display: inline-block;
+            padding: 4rem;
+            animation: marquee 10s linear infinite;
+        }
+        .left-content {
+            animation: slideInLeft 2s forwards;
+        }
+        .right-content {
+            animation: slideInRight 2s forwards;
+        }
+        @keyframes slideInLeft {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(0); }
+        }
+        @keyframes slideInRight {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(0); }
+        }
+        .padding_4x {
+            padding: 4rem;
+        }
+        .btn_1 {
+            color: #fff;
+        }
+        .btn_2 {
+            color: #000;
+        }
+        .tag {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .title {
+            font-size: 2.5rem;
+        }
+        .title em {
+            font-style: italic;
+        }
+        /* body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        } */
+        /* .slider {
+            
+            width: 80%;
+            max-width: 600px;
+        }
+        .slider img {
+            
+            width: 50%;
+            height: auto;
+        } */
+
+footer {
+    position:absolute;
+    top:2000px;
+    background-color: #333;
+    color: #fff;
+    padding: 50px 20px;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.footer-column {
+    flex: 1;
+    margin: 20px;
+    min-width: 200px;
+}
+
+.footer-column h3 {
+    border-bottom: 2px solid #777;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-column ul li {
+    margin-bottom: 10px;
+}
+
+.footer-column ul li a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-column ul li a:hover {
+    color: #ddd;
+}
+
+.footer-column p {
+    margin: 10px 0;
+}
+
+.footer-column form {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-column input[type="email"] {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+}
+
+.footer-column button {
+    padding: 10px;
+    border: none;
+    background-color: #ff6b6b;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.footer-column button:hover {
+    background-color: #ff4c4c;
+}
+
+.social-media a {
+    margin-right: 10px;
+    display: inline-block;
+}
+
+.social-media img {
+    width: 24px;
+    height: 24px;
+    filter: invert(100%);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #444;
+}
+section{
+    position:absolute;
+    top:1500px;
+    display:flex;
+}
+
+:root {
+            --gap-width: 20px;
+            --slide-width: 100%;
+            --slide-height: 250px;
+            --slide-bg-color: rgba(18, 92, 251, 0.52);
+            --overlay-bg-color: rgba(0, 0, 0, 0.5);
+            --overlay-text-color: #fff;
+            --overlay-transition: opacity 0.3s ease;
+            --border-radius: 20px;
+            --scroll-duration: 30s;
+            --total-width: 100%;
+        }
+
+        @media (min-width: 600px) {
+            :root {
+                --slide-width: 500px;
+                --slide-height: 250px;
+            }
+        }
+
+        .carousel {
+            position:absolute;
+            top: 1000px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .carousel-track {
+            display: flex;
+            gap: var(--gap-width);
+            animation: scroll var(--scroll-duration) linear infinite;
+        }
+
+        .slide {
+            background: var(--slide-bg-color);
+            flex: 0 0 var(--slide-width);
+            height: var(--slide-height);
+            border-radius: var(--border-radius);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .overlay {
+            position: absolute;
+            bottom: 0;
+            background: var(--overlay-bg-color);
+            color: var(--overlay-text-color);
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: var(--overlay-transition);
+            border-radius: var(--border-radius);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .slide:hover .overlay {
+            opacity: 1;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(calc(-1 * var(--total-width)));
+            }
+        }
+
+        .carousel:hover .carousel-track {
+            animation-play-state: paused;
+        }
+
+
+   
+    </style>
+</head>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <img class="img-fluid" height="40" width="50" src="{% static 'images/logo.jpg' %}" alt="">
+        <a class="navbar-brand" href=""></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">HOME<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">LOGIN</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'about' %}" class="btn btn_1 bg-primary">ABOUT</a>
+                </article>">ABOUT</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+<body style="background-image: url('{% static 'images/bg.jpg' %}');background-repeat:no-repeat; background-size:cover;">
+    <div class="container mt-5">
+        <div class="marquee-container">
+            <div class="marquee-content">
+                <article class="padding_4x">
+                    <h5 class="tag">Job Seeker</h5>
+                    <h1 class="title big">I am here to <em>Work.</em></h1>
+                    <p>We bridge with the best companies to apply and get hired.</p>
+                    <a href="{% url 'loginform' %}" class="btn btn_1 bg-primary">Get hired</a>
+                </article>
+            </div>
+            <div class="marquee-content">
+                <article class="padding_4x">
+                    <h5 class="tag">Employer</h5>
+                    <h1 class="title big">I am here to <em>Hire.</em></h1>
+                    <p>We bridge to identify and hire the right skill.</p>
+                    <a href="{% url 'loginform' %}" class="btn btn_2 bg-light">Find a talent</a>
+                </article>
+            </div>
+        </div>
+    </div>
+    
+   
+
+    <div class="carousel" aria-live="polite" aria-label="Image Carousel">
+        <h3>Find your Jobs..</h3>
+        <br>
+        <br>
+        <div class="carousel-track"></div>
+    </div>
+  
+
+<!-- <section class="bg-white pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-gray-900 text-3xl font-bold mb-4">Our Services</h2>
+      <p class="text-gray-500">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.</p>
+      <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-3">
+        <div class="bg-gray-100 p-6 rounded-md shadow-sm">
+          <h3 class="text-lg font-bold mb-2">Service 1</h3>
+          <p class="text-gray-500">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <div class="bg-gray-100 p-6 rounded-md shadow-sm">
+          <h3 class="text-lg font-bold mb-2">Service 2</h3>
+          <p class="text-gray-500">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <div class="bg-gray-100 p-6 rounded-md shadow-sm">
+          <h3 class="text-lg font-bold mb-2">Service 3</h3>
+          <p class="text-gray-500">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+      </div>
+    </div>
+  </section> -->
+
+  <!-- Testimonials Section -->
+<section class="bg-white pt-16 pb-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-gray-900 text-3xl font-bold mb-4">What Our Customers Say</h2>
+    <p class="text-gray-500">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.</p>
+    <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <!-- Testimonial 1 -->
+      <div class="bg-gray-100 p-6 rounded-md shadow-sm">
+        <img src="https://randomuser.me/api/portraits/med/men/75.jpg" alt="Customer 1 Avatar" class="w-16 h-16 rounded-full mb-4">
+        <h3 class="text-lg font-bold mb-2">Customer 1</h3>
+        <p class="text-gray-500">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      </div>
+      <!-- Testimonial 2 -->
+      <div class="bg-gray-100 p-6 rounded-md shadow-sm">
+        <img src="https://randomuser.me/api/portraits/med/men/57.jpg" alt="Customer 2 Avatar" class="w-16 h-16 rounded-full mb-4">
+        <h3 class="text-lg font-bold mb-2">Customer 2</h3>
+        <p class="text-gray-500">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Slick JS -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script>
+   document.addEventListener('DOMContentLoaded', () => {
+            const slidesData = [
+                { src: '{% static 'images/img.jpg' %}', description: '' },
+                { src: '{% static 'images/img1.jpg' %}', description: '' },
+                { src: '{% static 'images/img2.jpg' %}', description: '' },
+                { src: '{% static 'images/img3.jpg' %}', description: ' '},
+                { src: '{% static 'images/img4.jpg' %}', description: '' },
+                { src: '{% static 'images/img5.jpg' %}', description: '' },
+                { src: '{% static 'images/img6.jpg' %}', description: '' },
+                { src: '{% static 'images/img7.jpg' %}', description: '' },
+                { src: '{% static 'images/img8.jpg' %}', description: '' }
+            ];
+
+            const carouselTrack = document.querySelector('.carousel-track');
+
+            const createSlide = ({ src, description }) => {
+                const slideElement = document.createElement('div');
+                slideElement.className = 'slide';
+
+                const imgElement = document.createElement('img');
+                imgElement.src = src;
+                imgElement.alt = description;
+
+                const overlayElement = document.createElement('div');
+                overlayElement.className = 'overlay';
+                overlayElement.textContent = description;
+
+                slideElement.append(imgElement, overlayElement);
+
+                return slideElement;
+            };
+
+            const populateCarouselTrack = (slides) => {
+                const fragment = document.createDocumentFragment();
+                slides.forEach(slide => fragment.appendChild(createSlide(slide)));
+
+                // Duplicate slides to create a seamless loop effect
+                slides.forEach(slide => fragment.appendChild(createSlide(slide)));
+
+                carouselTrack.appendChild(fragment);
+
+                const slideWidth = carouselTrack.querySelector('.slide').offsetWidth;
+                const gapWidth = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--gap-width'));
+                const totalWidth = (slideWidth + gapWidth) * slides.length;
+                const duplicatedTotalWidth = totalWidth * 2;
+                const halfTotalWidth = duplicatedTotalWidth / 2;
+
+                carouselTrack.style.setProperty('--total-width', `${halfTotalWidth}px`);
+
+                const baseDuration = 40; // seconds | default = 40
+                const baseWidth = 5000; // px | default = 5000
+                const scrollDuration = (halfTotalWidth / baseWidth) * baseDuration;
+
+                carouselTrack.style.setProperty('--scroll-duration', `${scrollDuration}s`);
+            };
+
+            populateCarouselTrack(slidesData);
+        });
+    </script>
+</script>
+<footer>
+    <div class="footer-container">
+        <div class="footer-column">
+            <h3>Job Portal</h3>
+            <p>Your one-stop destination for all job needs. Find your dream job or the perfect candidate here.</p>
+        </div>
+        <div class="footer-column">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Jobs</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h3>Contact Us</h3>
+            <p>Email: support@jobportal.com</p>
+            <p>Phone: +123-456-7890</p>
+            <p>Address: 123 Job St, Employment City, Country</p>
+        </div>
+        <div class="footer-column">
+            <h3>Subscribe</h3>
+            <form>
+                <input type="email" placeholder="Enter your email">
+                <button type="submit">Subscribe</button>
+            </form>
+            <div class="social-media">
+                <a href="#"><img src="facebook-icon.png" alt="Facebook"></a>
+                <a href="#"><img src="twitter-icon.png" alt="Twitter"></a>
+                <a href="#"><img src="linkedin-icon.png" alt="LinkedIn"></a>
+                <a href="#"><img src="instagram-icon.png" alt="Instagram"></a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2024 Job Portal. All rights reserved.</p>
+    </div>
+</footer>
+</body>
+</html>
+

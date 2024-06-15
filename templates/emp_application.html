@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Applications</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Job Applications</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Applicant</th>
+                    <th>Job Title</th>
+                    <th>Applied On</th>
+                    <th>Resume</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for application in applications %}
+    <tr>
+        <td>{{ application.user.username }}</td>
+        <td>{{ application.job.job_title }}</td>
+        <td>{{ application.applied_on }}</td>
+        <td><a href="{{ application.profile.resume.url }}">Download Resume</a></td>
+        <td>
+            {% if application.is_accepted %}
+                Accepted
+            {% elif application.is_rejected %}
+                Rejected
+            {% else %}
+                Pending
+            {% endif %}
+        </td>
+        <td>
+            {% if not application.is_accepted and not application.is_rejected %}
+                <a href="{% url 'accept_application' application.id %}" class="btn btn-success">Accept</a>
+                <a href="{% url 'reject_application' application.id %}" class="btn btn-danger">Reject</a>
+            {% endif %}
+        </td>
+    </tr>
+{% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

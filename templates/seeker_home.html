@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Search</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { width: 70%; margin: auto; }
+        .search-bar { margin-top: 50px; display: flex; justify-content: space-between; }
+        .job-list { margin-top: 20px; }
+        .job-card { display: flex; align-items: center; border: 1px solid #ccc; padding: 15px; margin-bottom: 10px; border-radius: 5px; }
+        .job-card img { width: 80px; height: 80px; margin-right: 20px; object-fit: cover; border-radius: 5px; }
+        .job-details { flex-grow: 1; }
+        .apply-button { margin-left: 20px; }
+        .no-results { margin-top: 10px; color: red; }
+        .navbar-custom { background-color: #052c53; }
+        .navbar-custom .navbar-brand, .navbar-custom .nav-link { color: #ffffff; }
+        .navbar-custom .nav-link:hover { color: #f8f9fa; }
+        .navbar-toggler { border: none; }
+        .navbar-toggler-icon { background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%288, 8, 8, 0.5%29' stroke-width='2' linecap='round' linejoin='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"); }
+    </style>
+    <script>
+        $(document).ready(function() {
+            $('#search-form').on('submit', function(event) {
+                event.preventDefault();
+                var jobTitle = $('#job-title').val();
+                var location = $('#location').val();
+                $.ajax({
+                    url: '{% url "search_jobs" %}',
+                    data: {
+                        'job_title': jobTitle,
+                        'location': location
+                    },
+                    success: function(data) {
+                        var jobsList = $('#jobs-list');
+                        var noResults = $('#no-results');
+                        jobsList.empty();
+                        if (data.length > 0) {
+                            noResults.hide();
+                            data.forEach(function(job) {
+                                var imageUrl = job.job_file ? job.job_file : 'default_image_url.jpg';
+                                jobsList.append(
+                                    '<div class="job-card">' +
+                                        '<div class="job-details">' +
+                                            '<h5>' + job.job_title + '</h5>' +
+                                            '<p><strong>Company:</strong> ' + job.companyname + '</p>' +
+                                            '<p><strong>Description:</strong> ' + job.job_des + '</p>' +
+                                            '<p><strong>Experience:</strong> ' + job.job_exp + ' years</p>' +
+                                            '<p><strong>Salary:</strong> ' + job.job_salary + '</p>' +
+                                            '<p><strong>Location:</strong> ' + job.location + '</p>' +
+                                            '<p><strong>Posted on:</strong> ' + job.posted_on + '</p>' +
+                                        '</div>' +
+                                        '<button class="btn btn-primary apply-button" data-job-id="' + job.id + '">Apply</button>' +
+                                    '</div>'
+                                );
+                            });
+                            
+                            $('.apply-button').on('click', function() {
+                                var jobId = $(this).data('job-id');
+                                console.log('Applying for job ID:', jobId);
+                                $.ajax({
+                                    url: '{% url "apply_for_job" 0 %}'.replace('0', jobId),
+                                    method: 'POST',
+                                    data: {
+                                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                                    },
+                                    success: function(response) {
+                                        console.log('Response from server:', response);
+                                        alert(response.message);
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.error('AJAX request failed:', status, error);
+                                    }
+                                });
+                            });
+                        } else {
+                            noResults.show();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <nav class="navbar bg-dark navbar-expand-sm navbar-custom">
+        <img class="img-fluid" height="50" width="50" src="" alt="">
+        <a class="navbar-brand" href="#"></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                <li class="nav-item"><a class="nav-link active" aria-current="page" href="home.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'user_profile' %}">PROFILE</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Signup</a></li>
+            </ul>
+        </div>
+    </nav>
+    <marquee width="1800" height="30" direction="right" style="color:red;" id="marquee-message" {% if profile_complete %} style="display:none;" {% endif %}>Please Complete your Profile Before Applying  !!</marquee>
+    <div class="container">
+        <h1>Hi, {{ user.username }}</h1>
+        <div class="search-bar">
+            <form id="search-form" class="form-inline">
+                {% csrf_token %}
+                <div class="form-group mb-2">
+                    <label for="job-title" class="sr-only">Job Title</label>
+                    <select class="form-control" id="job-title" name="job_title">
+                        <option value="">Select Job Title</option>
+                        {% for job_title in job_titles %}
+                            <option value="{{ job_title }}">{{ job_title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group mx-sm-3 mb-2">
+                    <label for="location" class="sr-only">Location</label>
+                    <select class="form-control" id="location" name="location">
+                        <option value="">Select Location</option>
+                        {% for location in locations %}
+                            <option value="{{ location }}">{{ location }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary mb-2">Search</button>
+            </form>
+        </div>
+        <div id="jobs-list" class="job-list"></div>
+        <div id="no-results" class="no-results" style="display: none;">No jobs found</div>
+    </div>
+</body>
+</html>

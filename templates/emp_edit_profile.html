@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Profile</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body style="background-image: url('{% static 'images/pic1.jpg' %}'); background-repeat: no-repeat; background-size: cover;">
+  <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+    <a class="navbar-brand" href="#">Home</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Add Student</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Add Course</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Show Teacher</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Back</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            Edit Profile
+          </div>
+          <div class="card-body">
+            <form action="{% url 'emp_editprofile' emp.pk %}" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="companyname">Company Name:</label>
+                <input type="text" class="form-control" id="companyname" name="companyname" value="{{ emp.companyname }}">
+              </div>
+              <div class="form-group">
+                <label for="username">User Name:</label>
+                <input type="text" class="form-control" id="username" name="username" value="{{ emp.user.username }}">
+              </div>
+              <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ emp.user.email }}">
+              </div>
+              <div class="form-group">
+                <label for="mobile">Mobile Number:</label>
+                <input type="number" class="form-control" id="mobile" name="mobile1" value="{{ emp.mobile }}">
+              </div>
+              <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" class="form-control" id="address" name="address" value="{{ emp.address }}">
+              </div>
+              <div class="form-group">
+                <label for="website">Website:</label>
+                <input type="url" class="form-control" id="website" name="website" value="{{ emp.website }}">
+              </div>
+              <div class="form-group">
+                <label for="logo">Logo:</label>
+                <input type="file" class="form-control-file" id="logo" name="logo">
+                <img src="{{ emp.logo.url }}" alt="Company Logo" style="height:100px; width:200px; margin-top: 10px;">
+              </div>
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+            <a href="{% url 'emp_view_profile' %}" class="btn btn-secondary mt-3">Go Back</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

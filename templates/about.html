@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    line-height: 1.6;
+}
+
+header {
+    /* background: #0073e6; */
+    color: rgb(18, 2, 2);
+    padding: 1rem 0;
+    text-align: center;
+}
+
+main {
+    padding: 2rem;
+}
+.navbar-custom {
+            background-color: #052c53; /* Dark background */
+        }
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link {
+            color: #ffffff; /* White text */
+        }
+        .navbar-custom .nav-link:hover {
+            color: #f8f9fa; /* Lighter color on hover */
+        }
+        .navbar-toggler {
+            border: none;
+        }
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%288, 8, 8, 0.5%29' stroke-width='2' linecap='round' linejoin='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+        }
+section {
+    margin-bottom: 2rem;
+}
+
+h1, h2 {
+    margin-bottom: 1rem;
+    color:blue;
+}
+marquee{
+    animation: marquee 2s linear infinite;
+}
+ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+li {
+    margin-bottom: 0.5rem;
+}
+
+a {
+    color: #0073e6;
+}
+
+footer {
+    background: #f4f4f4;
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    main {
+        padding: 1rem;
+    }
+
+    section {
+        margin-bottom: 1rem;
+    }
+}
+
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - JobPortal</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body style="background-image: url('{% static 'images/bg2.jpg' %}');background-repeat:no-repeat; background-size:cover;">
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <img class="img-fluid" height="40" width="50" src="{% static 'images/logo.jpg' %}" alt="">
+        <a class="navbar-brand" href=""></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">HOME<span class="sr-only"></span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">LOGIN</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'about' %}" class="btn btn_1 bg-primary">ABOUT</a>
+                </article>">ABOUT</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <main>
+        
+        <header>
+            <h1 >About Us</h1>
+        </header>
+        <section id="mission">
+            <h2><marquee behavior="slide" width="220" height="50" direction="right" >Our Mission</marquee></h2>
+            <p>Our mission is to connect job seekers with their dream jobs and employers with the perfect candidates. We aim to simplify the hiring process, making it efficient, transparent, and enjoyable for everyone involved.</p>
+        </section>
+        <section id="who-we-are">
+            <h2><marquee behavior="slide" width="220" height="50" direction="right" >Who We Are</marquee></h2>
+            <p>JobPortal is a leading online employment marketplace, dedicated to helping individuals find their ideal job opportunities and assisting companies in locating the best talent. Our platform is user-friendly, comprehensive, and always evolving to meet the needs of the modern job market.</p>
+        </section>
+        <section id="what-we-do">
+            <h2><marquee behavior="slide" width="220" height="50" direction="right" >What We Do</marquee></h2>
+            <p>We provide a wide range of services to both job seekers and employers:</p>
+            <ul>
+                <li><strong>For Job Seekers:</strong> We offer an extensive database of job listings, career advice, and interview tips.</li>
+                <li><strong>For Employers:</strong> We provide job posting services, access to a vast pool of resumes, applicant tracking, and recruitment analytics.</li>
+            </ul>
+            <p>Our advanced search algorithms and personalized recommendations ensure that users find the most relevant opportunities and candidates.</p>
+        </section>
+        <section id="values">
+            <h2><marquee behavior="slide" width="220" height="50" direction="right" >Our Values</marquee></h2>
+            <p>At JobPortal, we believe in:</p>
+            <ul>
+                <li><strong>Integrity:</strong> Maintaining honesty and transparency in all our interactions.</li>
+                <li><strong>Innovation:</strong> Continuously improving our platform to better serve our users.</li>
+                <li><strong>Inclusivity:</strong> Creating an environment where diversity is celebrated and everyone is treated with respect.</li>
+            </ul>
+        </section>
+        <section id="team">
+            <h2><marquee behavior="slide" width="220" height="50" direction="right" >Our Team</marquee></h2>
+            <p>Our team is composed of dedicated professionals with expertise in technology, human resources, and customer service. We are passionate about helping people achieve their career goals and businesses find the right talent.</p>
+        </section>
+        <section id="contact">
+            <h2><marquee behavior="slide" width="230" height="50" direction="right" >Contact Us</marquee></h2>
+            <p>Have questions or need assistance? Reach out to us at <a href="mailto:contact@jobportal.com">contact@jobportal.com</a> or call us at (123) 456-7890. We’re here to help!</p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 JobPortal. All rights reserved.</p>
+    </footer>
+</body>
+</html>

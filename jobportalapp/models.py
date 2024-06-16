@@ -73,6 +73,8 @@ class JobApplication(models.Model):
     applied_on = models.DateTimeField(auto_now_add=True)
     is_accepted = models.BooleanField(default=False)
     is_rejected = models.BooleanField(default=False)
+    resume_viewed = models.BooleanField(default=False)  
+    profile_visited = models.BooleanField(default=False)
 
     def send_acceptance_email(self):
         send_mail(
@@ -84,3 +86,7 @@ class JobApplication(models.Model):
 
     def __str__(self):
         return f"{self.user.username} applied for {self.job.job_title}"
+    
+    
+
+

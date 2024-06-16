@@ -25,8 +25,8 @@ from django.urls import reverse
 
 
 # Create your views here.
-def index(request):
-    return render(request,'index.html')
+def index3(request):
+    return render(request,'index3.html')
 def loginform(request):
     return render(request,'loginform.html')
 def login1(request):
@@ -310,7 +310,7 @@ def add_job(request):
         job_salary=salary,
         job_file=file,
         posted_on=posted_on,
-        useer_id=user_id
+        user_id=user_id
     )
     job.save()
     return redirect('jobs')
@@ -332,7 +332,9 @@ def approve_job(request, job_id):
         job_exp=job_detail.job_exp,
         job_salary=job_detail.job_salary,
         job_file=job_detail.job_file,
-        posted_on=job_detail.posted_on)
+        posted_on=job_detail.posted_on,
+        user_id=job_detail.user_id
+        )
     approved_job.save()
     job_detail.delete()
     return redirect('job_list')
@@ -372,9 +374,9 @@ def apply_for_job(request):
     application, created = JobApplication.objects.get_or_create(user=user, job=job)
     return JsonResponse({'profile_complete': True, 'application_created': created})
 
-def check_new_applications(request):
-    new_applications = JobApplication.objects.filter(status='Pending').exists()
-    return JsonResponse({'new_applications': new_applications})
+# def check_new_applications(request):
+#     new_applications = JobApplication.objects.filter(status='Pending').exists()
+#     return JsonResponse({'new_applications': new_applications})
 
 @login_required
 def accept_application(request, application_id):
@@ -553,10 +555,6 @@ def user_profile(request):
 def about(request):
     return render(request,'about.html')
 
-def index1(request):
-    return render(request,'index1.html')
-def index3(request):
-    return render(request,'index3.html')
 def logout(request):
     auth.logout(request)
     return redirect('index')
@@ -620,3 +618,12 @@ def apply_for_jobs(request, job_id):
     
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method or not AJAX.'}, status=400)
+
+
+@login_required
+def seeker_applied_job(request):
+    applications = JobApplication.objects.filter(user=request.user)
+    context = {
+        'applications': applications
+    }
+    return render(request, 'seeker_applied_job.html', context)

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
 	<style>
 		/* styles.css */
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f2f2f2;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -15,7 +15,7 @@ body {
 }
 
 .login-container {
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.5); /* 50% transparent white */
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -39,7 +39,9 @@ label {
     margin-bottom: 5px;
     color: #555;
 }
-
+label:hover{
+    background-color: #ccc;
+}
 input {
     width: 100%;
     padding: 10px;
@@ -48,20 +50,23 @@ input {
     box-sizing: border-box;
 }
 
-button {
+.btn {
     width: 100%;
     padding: 10px;
     border: none;
     border-radius: 4px;
-    background-color: #4CAF50;
+    
     color: white;
     font-size: 16px;
     cursor: pointer;
     margin-top: 10px;
 }
 
-button:hover {
-    background-color: #45a049;
+.btn:hover {
+    text-decoration: none;
+    background-color: #767a84;
+    color:white;
+    
 }
 
 @media (max-width: 600px) {
@@ -78,9 +83,12 @@ button:hover {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
-<body>
+<body style="background-image: url('{% static 'images/lo.jpg' %}');background-repeat:no-repeat; background-size:cover;">
     <div class="login-container">
         <h2>Login</h2>
         <form action="{% url 'login1' %}" method="post" enctype="multipart/form-data">
@@ -93,14 +101,15 @@ button:hover {
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <button type="submit">Login</button>
+            <button class="btn  bg-secondary" type="submit" style="color:white;">Login</button>
 			<p>Don't have Account?</p>
-			<button>
-			<a href="{% url 'employeesignup' %}">Sign for Employeer</a>
+			<button class="btn  bg-secondary">
+			<a style="color:white;text-decoration: none;" href="{% url 'employeesignup' %}">Sign for Employeer</a>
 			</button>
 			<br>
-			<button>
-			<a href="{% url 'seeker_signup' %}">Sign for Jobseeker</a>
+            <br>
+			<button class="btn  bg-secondary ">
+			<a style="color:white;text-decoration: none;" href="{% url 'seeker_signup' %}">Sign for Jobseeker</a>
 			</button>
         </form>
     </div>

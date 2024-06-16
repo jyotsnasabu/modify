@@ -3,9 +3,7 @@ from .import views
 from .views import password_reset_form
 from django.contrib.auth import views as auth_views
 urlpatterns = [
-    path('',views.index,name='index'),
-    path('index1',views.index1,name='index1'),
-    path('index3',views.index3,name='index3'),
+    path('',views.index3,name='index3'),
     path('loginform',views.loginform,name='loginform'),
     path('login1',views.login1,name='login1'),
     path('employeesignup',views.employeesignup,name='employeesignup'),
@@ -46,5 +44,7 @@ urlpatterns = [
     # path('shows_users',views.shows_users,name='shows_users'),
     path('about', views.about, name='about'),
     path('apply/<int:job_id>/', views.apply_for_jobs, name='apply_for_jobs'),
-    path('check-new-applications/', views.check_new_applications, name='check_new_applications'),
+    # path('check-new-applications/', views.check_new_applications, name='check_new_applications'),
+     path('seeker_applied_job', views.seeker_applied_job, name='seeker_applied_job'),
+     
 ]

@@ -627,3 +627,11 @@ def seeker_applied_job(request):
         'applications': applications
     }
     return render(request, 'seeker_applied_job.html', context)
+
+def download_resume(request, application_id):
+    application = get_object_or_404(JobApplication, id=application_id)
+    application.resume_viewed = True
+    application.save()
+    
+    resume_url = application.user.profile.resume.url
+    return redirect(resume_url)

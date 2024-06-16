@@ -46,5 +46,5 @@ urlpatterns = [
     path('apply/<int:job_id>/', views.apply_for_jobs, name='apply_for_jobs'),
     # path('check-new-applications/', views.check_new_applications, name='check_new_applications'),
      path('seeker_applied_job', views.seeker_applied_job, name='seeker_applied_job'),
-     
+     path('download-resume/<int:application_id>/', views.download_resume, name='download_resume'),
 ]

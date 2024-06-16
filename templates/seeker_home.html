@@ -52,7 +52,7 @@
                                             '<p><strong>Company:</strong> ' + job.companyname + '</p>' +
                                             '<p><strong>Description:</strong> ' + job.job_des + '</p>' +
                                             '<p><strong>Experience:</strong> ' + job.job_exp + ' years</p>' +
-                                            '<p><strong>Salary:</strong> ' + job.job_salary + '</p>' +
+                                            '<p><strong>Salary:</strong> ' + job.job_salary + '</p>' +                     
                                             '<p><strong>Location:</strong> ' + job.location + '</p>' +
                                             '<p><strong>Posted on:</strong> ' + job.posted_on + '</p>' +
                                         '</div>' +
@@ -60,28 +60,38 @@
                                     '</div>'
                                 );
                             });
-                            
-                            $('.apply-button').on('click', function() {
-                                var jobId = $(this).data('job-id');
-                                console.log('Applying for job ID:', jobId);
-                                $.ajax({
-                                    url: '{% url "apply_for_job" 0 %}'.replace('0', jobId),
-                                    method: 'POST',
-                                    data: {
-                                        'csrfmiddlewaretoken': '{{ csrf_token }}'
-                                    },
-                                    success: function(response) {
-                                        console.log('Response from server:', response);
-                                        alert(response.message);
-                                    },
-                                    error: function(xhr, status, error) {
-                                        console.error('AJAX request failed:', status, error);
-                                    }
-                                });
-                            });
+
+                          
+
+
+         $('.apply-button').on('click', function() {
+        var jobId = $(this).data('job-id');
+        console.log('Applying for job ID:', jobId); // Debugging statement
+
+        $.ajax({
+            url: '{% url "apply_for_jobs" 0 %}'.replace('0', jobId),
+            method: 'POST',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'job_id': jobId
+            },
+            success: function(response) {
+                console.log('Response from server:', response); // Debugging statement
+                alert(response.message); // Show success message
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX request failed:', status, error); // Debugging statement
+                alert('Failed to apply for the job. Please try again.'); // Show error message
+            }
+    });
+});
+
+
+
                         } else {
                             noResults.show();
                         }
+
                     }
                 });
             });

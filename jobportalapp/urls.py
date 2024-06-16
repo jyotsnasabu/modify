@@ -45,5 +45,6 @@ urlpatterns = [
     # path('show_user',views.show_user,name='show_user'),
     # path('shows_users',views.shows_users,name='shows_users'),
     path('about', views.about, name='about'),
-    path('apply/<int:job_id>/', views.apply_for_job, name='apply_for_job'),
+    path('apply/<int:job_id>/', views.apply_for_jobs, name='apply_for_jobs'),
+    path('check-new-applications/', views.check_new_applications, name='check_new_applications'),
 ]

@@ -25,6 +25,7 @@ class Reset_password(models.Model):
     current_password=models.CharField(max_length=255,null=True)
     new_password=models.CharField(max_length=255,null=True)
 class Job_details(models.Model):
+    user=models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='job_details',null=True)
     job_title=models.CharField(max_length=255,null=True)
     companyname=models.CharField(max_length=255,null=True)
     location=models.CharField(max_length=255,null=True)
@@ -38,7 +39,7 @@ class Job_details(models.Model):
     is_approved = models.BooleanField(default=False)
     
 class Job(models.Model):
-    user=models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='jobs',null=True) 
+    user=models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='posted_jobs',null=True) 
     job_title=models.CharField(max_length=255,null=True)
     companyname=models.CharField(max_length=255,null=True)
     location=models.CharField(max_length=255,null=True)
@@ -49,16 +50,23 @@ class Job(models.Model):
     job_exp=models.IntegerField(null=True)
     posted_on=models.DateField(max_length=255,null=True)
     job_file=models.ImageField(blank=True,upload_to="images/",null=True)
-    companyname=models.CharField(max_length=255,null=True)
+    
     is_approved = models.BooleanField(default=False)
 
     def __str__(self):
         return self.job_title
+
+
+
 class Profile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='profile')
     user_img=models.ImageField(blank=True,upload_to="images/",null=True)
     address=models.CharField(max_length=255,null=True)
     resume = models.FileField(upload_to='resumes/',null=True)
+
+    def __str__(self):
+        return self.user.username
+
 class JobApplication(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
@@ -75,4 +83,4 @@ class JobApplication(models.Model):
         )
 
     def __str__(self):
-        return f"{self.user} applied for {self.job}"
+        return f"{self.user.username} applied for {self.job.job_title}"

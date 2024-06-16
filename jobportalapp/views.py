@@ -159,7 +159,7 @@ def search_jobs(request):
     if location:
         jobs = jobs.filter(location__icontains=location)
 
-    jobs_list = list(jobs.values('job_title', 'companyname', 'job_des', 'job_exp', 'job_file', 'job_salary', 'job_schedule', 'job_type', 'location','posted_on'))
+    jobs_list = list(jobs.values('id', 'job_title', 'companyname', 'job_des', 'job_exp', 'job_file', 'job_salary', 'job_schedule', 'job_type', 'location', 'posted_on'))
 
     return JsonResponse(jobs_list, safe=False)
 def employeer_home(request):
@@ -298,6 +298,7 @@ def add_job(request):
     salary = request.POST.get('salary')
     file = request.FILES.get('file')
     posted_on = request.POST.get('posted_on')
+    user_id = request.POST.get('userId')
     job = Job_details(
         job_title=job_title,
         companyname=company_name,
@@ -308,7 +309,8 @@ def add_job(request):
         job_exp=job_exp,
         job_salary=salary,
         job_file=file,
-        posted_on=posted_on
+        posted_on=posted_on,
+        useer_id=user_id
     )
     job.save()
     return redirect('jobs')
@@ -368,16 +370,11 @@ def apply_for_job(request):
         return JsonResponse({'profile_complete': False})
 
     application, created = JobApplication.objects.get_or_create(user=user, job=job)
-    if created:
-        send_mail(
-            'New Job Application',
-            f'{user.username} has applied for {job.job_title}.',
-            settings.DEFAULT_FROM_EMAIL,
-            [job.company_email]
-        )
-    return JsonResponse({'profile_complete': True})
+    return JsonResponse({'profile_complete': True, 'application_created': created})
 
-
+def check_new_applications(request):
+    new_applications = JobApplication.objects.filter(status='Pending').exists()
+    return JsonResponse({'new_applications': new_applications})
 
 @login_required
 def accept_application(request, application_id):
@@ -387,14 +384,13 @@ def accept_application(request, application_id):
     application.send_acceptance_email()
     return HttpResponse('Application accepted and email sent.')
 
-@login_required
+
+@csrf_exempt
 def reject_application(request, application_id):
     application = get_object_or_404(JobApplication, id=application_id)
     application.is_rejected = True
     application.save()
     return HttpResponse('Application rejected.')
-
-
 
 # def emp_application(request):
 #     employer = request.user
@@ -418,22 +414,19 @@ from .models import Job, JobApplication
 
 logger = logging.getLogger(__name__)
 
+@login_required
 def emp_application(request):
-    employer = request.user  # Get the User object, not just the username
+    employer = request.user  # Get the logged-in employer (CustomUser)
 
     try:
-        job = get_object_or_404(Job, user=employer)  # Filter by the employer's jobs
+        jobs = Job.objects.filter(user=employer)
     except Job.DoesNotExist:
-        logger.error("No job found for the employer: %s", employer)
-        return render(request, 'emp_application.html', {'applications': [], 'message': 'No job application found for this employer.'})
-    except Exception as e:
-        logger.error("An error occurred: %s", e)
-        return render(request, 'emp_application.html', {'applications': [], 'message': 'An unexpected error occurred.'})
+        jobs = []
 
-    applications = JobApplication.objects.filter(job=job)
+    applications = JobApplication.objects.filter(job__in=jobs)
+
     context = {'applications': applications}
     return render(request, 'emp_application.html', context)
-
 
 
 
@@ -568,17 +561,62 @@ def logout(request):
     auth.logout(request)
     return redirect('index')
 
+# @login_required
+# def apply_for_job(request, job_id):
+#     if request.method == 'POST':
+#         user = request.user
+#         job = Job.objects.get(id=job_id)
+        
+#         # Check if the user has already applied
+#         if JobApplication.objects.filter(user=user, job=job).exists():
+#             return JsonResponse({'success': False, 'message': 'You have already applied for this job.'})
+        
+#         # Create a new job application
+#         JobApplication.objects.create(user=user, job=job)
+#         return JsonResponse({'success': True, 'message': 'Application successful.'})
+#     return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+
+# @login_required
+# @csrf_exempt
+# def apply_for_job(request,job_id):
+#     if request.method == 'POST':
+#         user = request.user
+#         job = Job.objects.get(id=job_id)
+        
+#         # Check if the user has already applied
+#         if JobApplication.objects.filter(user=user, job=job).exists():
+#             return JsonResponse({'success': False, 'message': 'You have already applied for this job.'})
+        
+#         # Create a new job application
+#         JobApplication.objects.create(user=user, job=job)
+#         return JsonResponse({'success': True, 'message': 'Application successful.'})
+    
+    
+#     return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+
+
 @login_required
-def apply_for_job(request, job_id):
-    if request.method == 'POST':
-        user = request.user
-        job = Job.objects.get(id=job_id)
+@csrf_exempt
+def apply_for_jobs(request, job_id):
+    if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        try:
+            user = request.user
+            job = Job.objects.get(id=job_id)
+            
+            job_application = JobApplication.objects.create(
+                user=user,
+                job=job,
+                is_accepted=False,
+                is_rejected=False
+            )
+            
+            return JsonResponse({'success': True, 'message': 'Application successful.'})
         
-        # Check if the user has already applied
-        if JobApplication.objects.filter(user=user, job=job).exists():
-            return JsonResponse({'success': False, 'message': 'You have already applied for this job.'})
+        except Job.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Job not found.'}, status=404)
         
-        # Create a new job application
-        JobApplication.objects.create(user=user, job=job)
-        return JsonResponse({'success': True, 'message': 'Application successful.'})
-    return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)}, status=500)
+    
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method or not AJAX.'}, status=400)

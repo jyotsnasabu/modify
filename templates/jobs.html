@@ -95,6 +95,7 @@ button:hover {
         <h2>Upload Job Details</h2>
         <form method="POST" id="jobForm" action="{% url 'add_job' %}" enctype="multipart/form-data">
             {% csrf_token %}
+            <input type="hidden" id="userId" name="userId" value="{{ request.user.id }}">
             <div class="form-group">
                 <label for="jobTitle">Job Title:</label>
                 <input type="text" id="jobTitle" name="jobTitle" required>

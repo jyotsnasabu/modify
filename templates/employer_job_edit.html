@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        @media (min-width:992px) { 
+          .navbar-brand{
+        height: 60px;
+        width: 60px;
+      }
+      .navbar-custom {
+            background-color: #333; /* Dark background */
+        }
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link {
+            color: #ffffff; /* White text */
+        }
+        .navbar-custom .nav-link:hover {
+            color: #f8f9fa; /* Lighter color on hover */
+        }   
+            .vertical-nav {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 200px;
+                height: 100%;
+                background-color: #f8f8f8;
+                overflow-y: auto;
+                padding-top: 30px
+              }
+              li{
+                border-bottom: 2px solid black;
+                
+              }
+              li:hover{
+                background-color: rgb(100, 105, 100);
+              }
+             .content{
+              position: fixed;
+               margin-left:200px;
+               margin-top:60px;
+               overflow-x: hidden;
+             }
+             
+          }
+    </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-custom ">
+    <img class="img-fluid" height="40" width="50" src="{% static 'images/logo.jpg' %}" alt="">
+    <a class="navbar-brand" href="">My Job Portal</a>
+       
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                      <span class="navbar-toggler-icon"></span>
+                  </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto flex-column vertical-nav bg-dark ">
+            <li class="nav-item">
+
+                <a  class="nav-link" href="{% url 'employeer_home' %}">HOME</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link"href="{% url 'emp_view_profile' %}">PROFILE</a>
+          </li>
+               <li class="nav-item">
+                <a class="nav-link" style="list-style-type: none;" href="{% url 'jobs' %}">ADD JOBS</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link"href="{% url 'emp_application' %}">APPLICATIONS</a>
+             </li>
+            
+               <li class="nav-item">
+                <a class="nav-link"href="{% url 'password_reset_form' %}">RESET PASSWORD</a>
+               </li>
+               <li class="nav-item">
+                <a class="nav-link"href="{% url 'employer_jobs_list' %}">MY JOBS</a>
+               </li>
+          <li class="nav-item">
+           <a class="nav-link"href="{% url 'logout' %}">LOGOUT</a>
+       </li>
+          </ul>
+      
+        </div>
+      </nav>
+  <div class="container mt-5 content">
+    <div class="form-container mx-auto">
+      <h1 class="mb-4"></h1>
+      <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="job_title" class="form-label">Job Title:</label>
+          <input type="text" class="form-control" id="job_title" name="job_title" value="{{ job.job_title }}" required>
+        </div>
+        <div class="mb-3">
+          <label for="company_name" class="form-label">Company Name:</label>
+          <input type="text" class="form-control" id="companyname" name="companyName" value="{{ job.companyname }}" required>
+        </div>
+        <div class="mb-3">
+          <label for="location" class="form-label">Location:</label>
+          <input type="text" class="form-control" id="location" name="location" value="{{ job.location }}" required>
+        </div>
+        <div class="form-group">
+            <label for="job_schedule">Job Schedule:</label>
+            <select id="job_schedule" name="job_schedule" class="form-control" required>
+              <option value="full-time" {% if job.job_schedule == 'full-time' %}selected{% endif %}>Full-time</option>
+              <option value="part-time" {% if job.job_schedule == 'part-time' %}selected{% endif %}>Part-time</option>
+              <option value="contract" {% if job.job_schedule == 'contract' %}selected{% endif %}>Contract</option>
+              <option value="temporary" {% if job.job_schedule == 'temporary' %}selected{% endif %}>Temporary</option>
+              <option value="internship" {% if job.job_schedule == 'internship' %}selected{% endif %}>Internship</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="job_type">Job Type:</label>
+            <select id="job_type" name="job_type" class="form-control" required>
+              <option value="online" {% if job.job_type == 'online' %}selected{% endif %}>Online</option>
+              <option value="offline" {% if job.job_type == 'offline' %}selected{% endif %}>Offline</option>
+              <option value="hybrid" {% if job.job_type == 'hybrid' %}selected{% endif %}>Hybrid</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="description">Job Description:</label>
+            <textarea id="description" name="description" class="form-control" rows="4" required>{{ job.job_des }}</textarea>
+          </div>
+          <div class="form-group">
+            <label for="jobexp">Experience:</label>
+            <select id="jobexp" name="jobexp" class="form-control" required>
+              <option value="0" {% if job.job_exp == 0 %}selected{% endif %}>0</option>
+              <option value="1" {% if job.job_exp == 1 %}selected{% endif %}>1</option>
+              <option value="2" {% if job.job_exp == 2 %}selected{% endif %}>2</option>
+              <option value="3" {% if job.job_exp == 3 %}selected{% endif %}>3</option>
+              <option value="4" {% if job.job_exp == 4 %}selected{% endif %}>4</option>
+            </select>
+          </div>
+        <div class="mb-3">
+          <label for="salary" class="form-label">Salary:</label>
+          <input type="text" class="form-control" id="salary" name="salary" value="{{ job.job_salary }}">
+        </div>
+        <div class="mb-3">
+          <label for="posted_on" class="form-label">Posted on:</label>
+          <input type="date" class="form-control" id="posted_on" name="posted_on" value="{{ job.posted_on|date:'Y-m-d' }}" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </form>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

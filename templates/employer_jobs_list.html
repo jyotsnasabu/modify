@@ -44,16 +44,11 @@
               }
              .content{
               position: fixed;
-               margin-left:200px;
+               margin-left:500px;
                margin-top:60px;
                overflow-x: hidden;
              }
-             .align{
-              margin-left: 280px;
-             }
-             .pending-count {
-                  color: red;
-            }
+             
           }
     </style>
 </head>
@@ -76,7 +71,7 @@
               <a class="nav-link"href="{% url 'emp_view_profile' %}">PROFILE</a>
           </li>
                <li class="nav-item">
-                <a class="nav-link" style="list-style-type: none;" href="{% url 'jobs' %}">JOBS</a>
+                <a class="nav-link" style="list-style-type: none;" href="{% url 'jobs' %}">ADD JOBS</a>
             </li>
             <li class="nav-item">
               <a class="nav-link"href="{% url 'emp_application' %}">APPLICATIONS</a>
@@ -85,40 +80,40 @@
                <li class="nav-item">
                 <a class="nav-link"href="{% url 'password_reset_form' %}">RESET PASSWORD</a>
                </li>
-              
+               <li class="nav-item">
+                <a class="nav-link"href="{% url 'employer_jobs_list' %}">MY JOBS</a>
+               </li>
           <li class="nav-item">
            <a class="nav-link"href="{% url 'logout' %}">LOGOUT</a>
        </li>
           </ul>
+      
         </div>
       </nav>
-      
-      <div class="container mt-5">
+    <div class="container mt-5">
+        <h1 class="mb-4">Your Uploaded Jobs</h1>
         <div class="row">
-          <div class="col-md-6 offset-md-3">
-            <div class="card">
-              <div class="card-header bg-primary text-white">
-                Profile Information
-              </div>
-              <div class="card-body">
-                <div class="text-center">
-                  <img src="{{ profile.user_img.url }}" class="rounded" style="height:100px; width:100px;">
+            {% for job in jobs %}
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ job.job_title }}</h5>
+                        <p class="card-text"><strong>Company:</strong> {{ job.companyname }}</p>
+                        <p class="card-text"><strong>Location:</strong> {{ job.location }}</p>
+                        <a href="{% url 'employer_job_edit' job.pk %}" class="btn btn-primary">Edit Job</a>
+                    </div>
                 </div>
-                <h5 class="card-title mt-3">{{ profile.user.username }}</h5>
-                <p class="card-text"><strong>Email:</strong> {{ profile.user.email }}</p>
-                <p class="card-text"><strong>Mobile number:</strong> {{ usermember.mobile }}</p>
-                <p class="card-text"><strong>Date of birth:</strong> {{ usermember.dob }}</p>
-                <p class="card-text"><strong>Address:</strong> {{ profile.address }}</p>
-                <a href="{% url 'emp_application' %}" class="btn btn-primary">Go Back</a>
-              </div>
             </div>
-          </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info" role="alert">
+                    No jobs uploaded yet.
+                </div>
+            </div>
+            {% endfor %}
         </div>
-      </div>
+    </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

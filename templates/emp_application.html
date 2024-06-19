@@ -1,112 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-    <style>
-        @media (min-width:992px) {    
-            .vertical-nav {
-                position: fixed;
-                top: 70px;
-                left: 0;
-                width: 200px;
-                height: 100%;
-                background-color: #f8f8f8;
-                overflow-y: auto;
-                padding-top: 30px
-            }
-            li {
-                border-bottom: 2px solid black;
-            }
-            li:hover {
-                background-color: green;
-            }
-        }
-    </style>
+  {% load static %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Applications</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    @media (min-width:992px) {
+      .navbar-brand {
+        height: 60px;
+        width: 60px;
+      }
+      .navbar-custom {
+        background-color: #333; /* Dark background */
+      }
+      .navbar-custom .navbar-brand,
+      .navbar-custom .nav-link {
+        color: #ffffff; /* White text */
+      }
+      .navbar-custom .nav-link:hover {
+        color: #f8f9fa; /* Lighter color on hover */
+      }
+     
+      .vertical-nav {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 200px;
+        height: 100%;
+        background-color: #f8f8f8;
+        overflow-y: auto;
+        padding-top: 30px;
+      }
+      li {
+        border-bottom: 2px solid black;
+      }
+      li:hover {
+        background-color: rgb(100, 105, 100);
+      }
+      .content {
+        position: fixed;
+        margin-left: 200px;
+        margin-top: 60px;
+        overflow-x: hidden;
+      }
+      .align {
+        margin-left: 280px;
+      }
+      .pending-count {
+        color: red;
+      }
+    }
+  </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
-        <img class="img-fluid" width="50" height="50" src="logo.jpg" alt="logo">
-        <p class="navbar-brand">TUTOR HUB</p>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto flex-column vertical-nav bg-primary">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'index3' %}">HOME</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" style="list-style-type: none;" href="{% url 'emp_view_profile' %}">PROFILE</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'emp_edit_profile' %}">EDIT PROFILE</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'jobs' %}">JOBS</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'emp_application' %}">APPLICATIONS</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'password_reset_form' %}">RESET PASSWORD</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'logout' %}">LOGOUT</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <div class="container">
-        <h1>Job Applications</h1>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Applicant</th>
-                    <th>Job Title</th>
-                    <th>Applied On</th>
-                    <th>Resume</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for application in applications %}
-                    <tr>
-                        <td>{{ application.user.username }}</td>
-                        <td>{{ application.job.job_title }}</td>
-                        <td>{{ application.applied_on }}</td>
-                        <td>
-                            {% if application.user.profile.resume %}
-                                <a href="{% url 'download_resume' application.id %}">Download Resume</a>
-                            {% else %}
-                                No Resume
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if application.is_accepted %}
-                                Accepted
-                            {% elif application.is_rejected %}
-                                Rejected
-                            {% else %}
-                                Pending
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if not application.is_accepted and not application.is_rejected %}
-                                <a href="{% url 'accept_application' application.id %}" class="btn btn-success">Accept</a>
-                                <a href="{% url 'reject_application' application.id %}" class="btn btn-danger">Reject</a>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+  <nav class="navbar navbar-expand-lg navbar-custom">
+    <img class="img-fluid" height="40" width="50" src="{% static 'images/logo.jpg' %}" alt="Logo">
+    <a class="navbar-brand" href="#">My Job Portal</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto flex-column vertical-nav bg-dark">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'employeer_home' %}">HOME</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'emp_view_profile' %}">PROFILE</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" style="list-style-type: none;" href="{% url 'jobs' %}"> UPLOAD JOBS</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'emp_application' %}">APPLICATIONS</a><span class="badge badge-primary">{{ pending_applications_count }}</span>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'password_reset_form' %}">RESET PASSWORD</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'logout' %}">LOGOUT</a>
+        </li>
+      </ul>
     </div>
+  </nav>
+
+  <div class="container mt-5">
+    <h1>Job Applications <span class="badge badge-primary">{{ total_applications_count }}</span></h1>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Applicant</th>
+          <th>Job Title</th>
+          <th>Applied On</th>
+          <th>Resume</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for application in applications %}
+          <tr>
+            <td>
+              {% if application.user.usermember.is_verified %}
+                <a href="{% url 'show_user' application.id %}">{{ application.user.username }} <span style="color:green;">&#10003;</span></a>
+              {% else %}
+                <a href="{% url 'show_user' application.id %}">{{ application.user.username }}</a>
+              {% endif %}
+            </td>
+            <td>{{ application.job.job_title }}</td>
+            <td>{{ application.applied_on }}</td>
+            <td>
+              {% if application.user.profile.resume %}
+                <a href="{% url 'download_resume' application.id %}">Download Resume</a>
+              {% else %}
+                No Resume
+              {% endif %}
+            </td>
+            <td>
+              {% if application.is_accepted %}
+                Accepted
+              {% elif application.is_rejected %}
+                Rejected
+              {% else %}
+                Pending
+              {% endif %}
+            </td>
+            <td>
+              {% if not application.is_accepted and not application.is_rejected %}
+                <a href="{% url 'accept_application' application.id %}" class="btn btn-success">Accept</a>
+                <a href="{% url 'reject_application' application.id %}" class="btn btn-danger">Reject</a>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </body>
 </html>

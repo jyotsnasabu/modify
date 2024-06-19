@@ -3,7 +3,7 @@
 <head>
     <style>
         :root {
-            --primary-color: #1e88e5;
+            --primary-color: #515253;
             --secondary-color: #167edc;
             --black: #000000;
             --white: #ffffff;
@@ -410,7 +410,7 @@
                             </div>
                             <div class="input-group">
                                 <i class='bx bxs-lock-alt'></i>
-                                <input type="email" name="email" placeholder="Email" required>
+                                <input type="email" name="email" placeholder="Email" required oninput="checkEmail(this.value)">
                             </div>
                             <div class="input-group">
                                 <i class='bx bxs-lock-alt'></i>
@@ -458,51 +458,82 @@
 
     <script>
         const container = document.getElementById('container');
-
+        const emailError = document.getElementById('email-error');
+        let emailExists = false;
+    
         function validateForm() {
             const form = document.forms['registrationForm'];
             const mobile = form['mobile1'].value;
             const logo = form['logo'].value;
             const website = form['website'].value;
             const address = form['address'].value;
-
+    
             if (!/^[0-9]{10}$/.test(mobile)) {
                 alert("Mobile number must be 10 digits.");
                 return false;
             }
-
+    
             if (logo === "") {
                 alert("Please upload your company logo.");
                 return false;
             }
-
+    
             if (!/^https?:\/\/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+([/?].*)?$/.test(website)) {
                 alert("Please enter a valid URL.");
                 return false;
             }
-
+    
             if (address.length < 10) {
                 alert("Address must be at least 10 characters long.");
                 return false;
             }
-
+    
             const inputs = form.querySelectorAll("input[required]");
             for (const input of inputs) {
                 if (!input.value.trim()) {
-                    event.preventDefault();
                     alert("Please fill out all required fields.");
-                    
                     return false;
                 }
             }
-
-            alert("Your submission was successfull!, Wait for admin approval, Thank you.");
+    
+            if (emailExists) {
+                alert("Email ID already exists.");
+                return false;
+            }
+    
+            alert("Your submission was successful! Wait for admin approval, thank you.");
             return true;
         }
-
+    
+        function checkEmail(email) {
+            if (!email) {
+                emailError.style.display = 'none';
+                emailExists = false;
+                return;
+            }
+    
+            fetch(`/check_email/?email=${email}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        emailError.style.display = 'block';
+                        emailExists = true;
+                    } else {
+                        emailError.style.display = 'none';
+                        emailExists = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    emailError.style.display = 'none';
+                    emailExists = false;
+                });
+        }
+    
         setTimeout(() => {
             container.classList.add("sign-in");
         }, 200);
     </script>
+    
 </body>
 </html>

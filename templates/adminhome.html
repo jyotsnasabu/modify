@@ -70,7 +70,7 @@
           <ul class="navbar-nav mr-auto flex-column vertical-nav bg-dark ">
             <li class="nav-item">
 
-                <a  class="nav-link" href="home1.html">HOME</a>
+                <a  class="nav-link" href="{% url 'adminhome' %}">HOME</a>
             </li>
            
                <li class="nav-item">
@@ -80,7 +80,7 @@
               <a class="nav-link"href="{% url 'view_jobs' %}">VIEW JOBS</a>
              </li>
             <li class="nav-item">
-              <a class="nav-link"href="viewteacher.html">EMPLOYEE</a>
+              <a class="nav-link"href="{% url 'show_employee' %}">EMPLOYEE</a>
           </li>
                <li class="nav-item">
                 <a class="nav-link"href="{% url 'show_jobseeker' %}">JOB SEEKER</a>
@@ -88,44 +88,18 @@
                <li class="nav-item">
                 <a class="nav-link" href="{% url 'admin_approve' %}">APPROVE/DISAPPROVE(<span class="pending-count">{{ total_pending_count }}</span>)</a>
             </li>
-         
+            <li class="nav-item">
+              <a class="nav-link"href="{% url 'password_reset_form' %}">RESET PASSWORD</a>
+             </li>
           <li class="nav-item">
-           <a class="nav-link"href="index.html">LOGOUT</a>
+           <a class="nav-link"href="{% url 'logout' %}">LOGOUT</a>
        </li>
           </ul>
       
         </div>
       </nav>
-      <div class="col content">
-        <section id="ouradvantages" class="bg- py-5">
-            <div class="container" >
-              <h2 class="text-center mb-4">WELCOME ADMIN</h2>
-              <div class="card-deck">
-                <div class="card">
-                  <!-- <img class="card-img-top" src="c4.jpg" alt="Card image cap"> -->
-                  <div class="card-body" style="background-color:aquamarine">
-                    <!-- <h5 class="card-title">Faster delivery</h5> -->
-                    <p class="card-text"><p>COURSES</p>
-                  
-                  </div>
-                </div>
-                <div class="card">
-                  <!-- <img  style="height: 170px;" class="card-img-top" src="b1.jpg" alt="Card image cap"> -->
-                  <div class="card-body " style="background-color:aquamarine" >
-                    <!-- <h5 class="card-title">Quality of the product</h5> -->
-                    <p class="card-text ">TEACHER</p>
-                  
-                  </div>
-                </div>
-                <div class="card" >
-                  <!-- <img  style="height:170px;" class="card-img-top" src="b2.jpg" alt="Card image cap"> -->
-                  <div class="card-body" style="background-color:aquamarine">
-                    <!-- <h5 class="card-title">No extra delivary charges</h5> -->
-                    <p class="card-text"><p>STUDENT</p>
-                   
-                  </div>
-                </div>
-      </div>
+     
+     <h2 style="text-align: center;">WELCOME ADMIN</h2>
       <p1 class="container">
         <img class="img-fluid" src="admin.jpg" alt="" style="position:relative;top:30px;">
         <!-- <img class="img-fluid" src="admin1.jpg" alt="" style="position:relative;top:30px;margin-left:30px;height:200px;width:600px;"> -->

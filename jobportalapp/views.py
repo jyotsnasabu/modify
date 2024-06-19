@@ -128,10 +128,18 @@ def add_employee(request):
 def show_employee(request):
     employees = Employee.objects.all()
     user=Usermember.objects.all()
-    return render(request, 'show_employee.html', {'employee': employees,'user': user})
+    pending_users_count = Usermember.objects.filter(is_approved=False).count()
+    pending_employers_count = Employee.objects.filter(is_approved=False).count()
+    pending_job_count = Job_details.objects.filter(is_approved=False).count()
+    total_pending_count = pending_users_count + pending_employers_count
+    return render(request, 'show_employee.html', {'employee': employees,'user': user,'total_pending_count': total_pending_count,'pending_job_count':pending_job_count})
 def show_jobseeker(request):
     user=Usermember.objects.all()
-    return render(request, 'show_jobseeker.html', {'user': user})
+    pending_users_count = Usermember.objects.filter(is_approved=False).count()
+    pending_employers_count = Employee.objects.filter(is_approved=False).count()
+    pending_job_count = Job_details.objects.filter(is_approved=False).count()
+    total_pending_count = pending_users_count + pending_employers_count
+    return render(request, 'show_jobseeker.html', {'user': user,'total_pending_count': total_pending_count,'pending_job_count':pending_job_count})
 def adminhome(request):
     pending_users_count = Usermember.objects.filter(is_approved=False).count()
     pending_employers_count = Employee.objects.filter(is_approved=False).count()
@@ -139,29 +147,37 @@ def adminhome(request):
     total_pending_count = pending_users_count + pending_employers_count
     return render(request, 'adminhome.html', {'total_pending_count': total_pending_count,'pending_job_count':pending_job_count})
 def seeker_home(request):
+    jobs = Job.objects.all()
     job_titles = Job.objects.values_list('job_title', flat=True).distinct()
     locations = Job.objects.values_list('location', flat=True).distinct()
-    context = {
+    job_types = Job.objects.values_list('job_type', flat=True).distinct()
+    return render(request, 'seeker_home.html', {
+        'jobs': jobs,
         'job_titles': job_titles,
         'locations': locations,
-    }
-    return render(request, 'seeker_home.html', context)
+        'job_types': job_types,
+        'profile_complete': request.user.profile.is_complete,  
+    })
 
 def search_jobs(request):
     job_title = request.GET.get('job_title', '')
     location = request.GET.get('location', '')
+    posting_date = request.GET.get('posting_date', '')
+    job_type = request.GET.get('job_type', '')
 
     jobs = Job.objects.all()
 
     if job_title:
-        jobs = jobs.filter(job_title__icontains=job_title)
-
+        jobs = jobs.filter(job_title=job_title)
     if location:
-        jobs = jobs.filter(location__icontains=location)
-
-    jobs_list = list(jobs.values('id', 'job_title', 'companyname', 'job_des', 'job_exp', 'job_file', 'job_salary', 'job_schedule', 'job_type', 'location', 'posted_on'))
-
-    return JsonResponse(jobs_list, safe=False)
+        jobs = jobs.filter(location=location)
+    if posting_date:
+        jobs = jobs.filter(posted_on=posting_date)
+    if job_type:
+        jobs = jobs.filter(job_type=job_type)
+    jobs = jobs.order_by('-posted_on')
+    jobs = jobs.values('id', 'job_title', 'companyname', 'job_des', 'job_exp', 'job_salary', 'location', 'posted_on', 'job_type', 'job_file')
+    return JsonResponse(list(jobs), safe=False)
 def employeer_home(request):
      # Assume the employer's ID is stored in the session
     employer_id = request.session.get('employer_id')
@@ -299,6 +315,7 @@ def add_job(request):
     file = request.FILES.get('file')
     posted_on = request.POST.get('posted_on')
     user_id = request.POST.get('userId')
+    employee_id = request.POST.get('employeeId')
     job = Job_details(
         job_title=job_title,
         companyname=company_name,
@@ -310,7 +327,8 @@ def add_job(request):
         job_salary=salary,
         job_file=file,
         posted_on=posted_on,
-        user_id=user_id
+        user_id=user_id,
+        employee_id=employee_id
     )
     job.save()
     return redirect('jobs')
@@ -342,13 +360,16 @@ def approve_job(request, job_id):
 # Admin view to disapprove a job
 
 def disapprove_job(request, job_id):
-    
     job_detail = get_object_or_404(Job_details, id=job_id)
     job_detail.delete()
     return redirect('job_list')
 def view_jobs(request):
     job=Job.objects.all()
-    return render(request,'view_jobs.html',{'job':job}) 
+    pending_users_count = Usermember.objects.filter(is_approved=False).count()
+    pending_employers_count = Employee.objects.filter(is_approved=False).count()
+    pending_job_count = Job_details.objects.filter(is_approved=False).count()
+    total_pending_count = pending_users_count + pending_employers_count
+    return render(request,'view_jobs.html',{'job':job,'total_pending_count': total_pending_count,'pending_job_count':pending_job_count}) 
 def check_profile_complete(request):
     user = request.user
     profile_complete = False
@@ -363,7 +384,8 @@ def apply_for_job(request):
     job_id = request.POST.get('job_id')
     job = get_object_or_404(Job, id=job_id)
     user = request.user
-
+    if not request.user.profile.is_complete:
+        return JsonResponse({'message': 'Please complete your profile before applying.'}, status=400)
     try:
         profile = user.profile
         if not (profile.name and profile.email and profile.resume):
@@ -374,9 +396,6 @@ def apply_for_job(request):
     application, created = JobApplication.objects.get_or_create(user=user, job=job)
     return JsonResponse({'profile_complete': True, 'application_created': created})
 
-# def check_new_applications(request):
-#     new_applications = JobApplication.objects.filter(status='Pending').exists()
-#     return JsonResponse({'new_applications': new_applications})
 
 @login_required
 def accept_application(request, application_id):
@@ -394,21 +413,6 @@ def reject_application(request, application_id):
     application.save()
     return HttpResponse('Application rejected.')
 
-# def emp_application(request):
-#     employer = request.user
-
-#     # Ensure you are fetching the job instance correctly
-#     try:
-#         job = get_object_or_404(Job, user=employer)  # Assuming you want to filter by the employer's jobs
-#     except Job.DoesNotExist:
-#         return render(request, 'emp_application.html', {'applications': [], 'message': 'No job application found for this employer.'})
-
-#     applications = JobApplication.objects.filter(job=job)
-#     context = {'applications': applications}
-#     return render(request, 'emp_application.html', context)
-
-
-
 
 import logging
 from django.shortcuts import render, get_object_or_404
@@ -417,20 +421,20 @@ from .models import Job, JobApplication
 logger = logging.getLogger(__name__)
 
 @login_required
+
 def emp_application(request):
-    employer = request.user  # Get the logged-in employer (CustomUser)
-
-    try:
-        jobs = Job.objects.filter(user=employer)
-    except Job.DoesNotExist:
-        jobs = []
-
+    employer = request.user  
+    jobs = Job.objects.filter(user=employer)
     applications = JobApplication.objects.filter(job__in=jobs)
+    total_applications_count = applications.count()
+    pending_applications_count = applications.filter(is_accepted=False, is_rejected=False).count()
 
-    context = {'applications': applications}
+    context = {
+        'applications': applications,
+        'total_applications_count': total_applications_count,
+        'pending_applications_count': pending_applications_count
+    }
     return render(request, 'emp_application.html', context)
-
-
 
 def user_profile(request):
     try:
@@ -470,127 +474,16 @@ def user_profile(request):
         'profile': profile
     }
     return render(request, 'user_profile.html', context)
-
-
-
-
-# def user_profile(request):
-    
-#     usermember = Usermember.objects.get(user=request.user)
-#     profile, created = Profile.objects.get_or_create(user=request.user)
-
-#     if request.method == 'POST':
-#         # Update UserMember fields
-#         usermember.user.first_name = request.POST['firstname']
-#         usermember.user.last_name = request.POST['lastname']
-#         usermember.user.username = request.POST['user_name']
-#         usermember.user.email = request.POST['email']
-#         usermember.mobile = request.POST['mobile1']
-#         usermember.dob = request.POST['dob']
-#         address=request.POST['address']
-#         resume=request.POST['resume']
-#         user_img=request.POST.FILES['profileimage']
-    
-#         profile = Profile(
-#             address=address,
-#             resume=resume,
-#             user_img=user_img
-#         )
-#         usermember.save()
-
-#         # Update Profile fields
-#         profile.address = request.POST.get('address')
-#         if 'resume' in request.FILES:
-#             profile.resume = request.FILES['resume']
-#         if 'userImage' in request.FILES:
-#             profile.user_img = request.FILES['userImage']
-#         # if 'img' in request.FILES:
-    
-#         #     print("Existing image path:", profile.user_img.path)
-    
-    
-#         # try:
-#         #     if profile.user_img:
-#         #         os.remove(profile.user_img.path)
-#         #         print("Existing image removed successfully")
-#         # except Exception as e:
-#         #     print("Error removing existing image:", e)
-
-        
-#         # profile.user_img = request.FILES['img']
-#         profile.save()
-
-#         return redirect('user_profile')
-
-#     context = {
-#         'usermember': usermember,
-#         'profile': profile
-#     }
-#     return render(request, 'user_profile.html', context)
-# def user_profile(request):
-#     mobile = request.POST['mobile1']
-#     dob = request.POST['dob']
-    
-#     usermember = Usermember(
-#         mobile=mobile,
-#         dob=dob 
-#     )
-#     usermember.save()
-#     return redirect('user_profile')
-# def show_user(request):
-#     return render(request,'show_user.html')
-# def shows_users(request):
-#     address=request.POST['address']
-#     resume=request.POST['resume']
-#     user_img=request.POST.FILES['profileimage']
-    
-#     profile = Profile(
-#         address=address,
-#         resume=resume,
-#         user_img=user_img
-#     )
-#     profile.save()
-#     return redirect('show_user')
+      
 
 def about(request):
     return render(request,'about.html')
 
 def logout(request):
     auth.logout(request)
-    return redirect('index')
+    return redirect('index3')
 
-# @login_required
-# def apply_for_job(request, job_id):
-#     if request.method == 'POST':
-#         user = request.user
-#         job = Job.objects.get(id=job_id)
-        
-#         # Check if the user has already applied
-#         if JobApplication.objects.filter(user=user, job=job).exists():
-#             return JsonResponse({'success': False, 'message': 'You have already applied for this job.'})
-        
-#         # Create a new job application
-#         JobApplication.objects.create(user=user, job=job)
-#         return JsonResponse({'success': True, 'message': 'Application successful.'})
-#     return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
-# @login_required
-# @csrf_exempt
-# def apply_for_job(request,job_id):
-#     if request.method == 'POST':
-#         user = request.user
-#         job = Job.objects.get(id=job_id)
-        
-#         # Check if the user has already applied
-#         if JobApplication.objects.filter(user=user, job=job).exists():
-#             return JsonResponse({'success': False, 'message': 'You have already applied for this job.'})
-        
-#         # Create a new job application
-#         JobApplication.objects.create(user=user, job=job)
-#         return JsonResponse({'success': True, 'message': 'Application successful.'})
-    
-    
-#     return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
 
 @login_required
@@ -632,6 +525,93 @@ def download_resume(request, application_id):
     application = get_object_or_404(JobApplication, id=application_id)
     application.resume_viewed = True
     application.save()
-    
     resume_url = application.user.profile.resume.url
     return redirect(resume_url)
+@csrf_exempt
+def verify_employee(request, employee_id):
+    if request.method == 'POST':
+        employee = get_object_or_404(Employee, id=employee_id)
+        employee.is_verified = True
+        employee.save()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
+@csrf_exempt
+def delete_employee(request, employee_id):
+    if request.method == 'POST':
+        employee = get_object_or_404(Employee, id=employee_id)
+        user = employee.user  # Save reference to the related user
+        employee.delete()     # Delete the employee
+        user.delete()         # Delete the related user
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
+@csrf_exempt
+def verify_user(request, user_id):
+    if request.method == 'POST':
+        user = Usermember.objects.get(id=user_id)
+        user.is_verified = True
+        user.save()
+        return JsonResponse
+@csrf_exempt
+def delete_user(request, user_id):
+    if request.method == 'POST':
+        user_member = get_object_or_404(Usermember, id=user_id)
+        user = user_member.user  # Reference to the related user
+        user_member.delete()     # Delete the Usermember instance
+        user.delete()            # Delete the related User instance
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
+    
+ 
+
+def show_user(request, application_id):
+    application = get_object_or_404(JobApplication, id=application_id)
+    profile = get_object_or_404(Profile, user=application.user)
+    
+    if not application.profile_visited:
+        application.profile_visited = True
+        application.save()
+
+    usermember = Usermember.objects.filter(user=application.user).first()
+    
+    return render(request, "show_user.html", {
+        'application': application,
+        'profile': profile,
+        'usermember': usermember,
+    })
+
+
+@login_required
+def job_list_view(request):
+    jobs = Job.objects.filter(user=request.user)
+    context = {
+        'jobs': jobs
+    }
+    return render(request, 'employer_jobs_list.html', context)
+
+@login_required
+def job_edit_view(request, pk):
+    job = get_object_or_404(Job, pk=pk)
+
+    if request.method == 'POST':
+        # Update job details
+        job.job_title = request.POST.get('job_title')
+        job.companyname = request.POST.get('companyName')
+        job.location = request.POST.get('location')
+        job.job_schedule = request.POST.get('job_schedule')
+        job.job_type = request.POST.get('job_type')
+        job.job_des= request.POST.get('description')
+        job.job_exp = request.POST.get('jobexp')
+        job.job_salary = request.POST.get('salary')
+        job.posted_on = request.POST.get('posted_on')
+        job.save()
+        return redirect('employer_jobs_list')
+
+    context = {
+        'job': job
+    }
+    return render(request, 'employer_job_edit.html', context)
+@login_required
+def delete_job(request, job_id):
+    job = get_object_or_404(Job, id=job_id)
+    job.delete()
+    return redirect('view_jobs') 

@@ -1,117 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  {% load static %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Listings</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-    <style>
-        @media (min-width:992px) {    
-            .vertical-nav {
-                position: fixed;
-                top: 56px;
-                left: 0;
-                width: 200px;
-                height: 100%;
-                background-color: #f8f8f8;
-                overflow-y: auto;
-                padding-top: 30px
-              }
-              li{
-                border-bottom: 2px solid black;
-                
-              }
-              li:hover{
-                background-color: rgb(54, 8, 192);
-              }
-             .content{
-               margin-left:400px;
-               margin-top:60px;
-               overflow-x: hidden;
-             }
-             .align{
-              margin-left: 280px;
-             }
-          }
-    </style>
+  <style>
+    @media (min-width:992px) {
+      .navbar-brand {
+        height: 60px;
+        width: 60px;
+      }
+      .navbar-custom {
+        background-color: #333; /* Dark background */
+      }
+      .navbar-custom .navbar-brand,
+      .navbar-custom .nav-link {
+        color: #ffffff; /* White text */
+      }
+      .navbar-custom .nav-link:hover {
+        color: #f8f9fa; /* Lighter color on hover */
+      }
+      .vertical-nav {
+        position: fixed;
+        top: 56px;
+        left: 0;
+        width: 200px;
+        height: 100%;
+        background-color: #f8f8f8;
+        overflow-y: auto;
+        padding-top: 30px;
+      }
+      li {
+        border-bottom: 2px solid black;
+      }
+      li:hover {
+        background-color: rgb(100, 105, 100);
+      }
+      .content {
+        margin-left: 200px;
+        margin-top: 60px;
+        overflow-x: hidden;
+      }
+      .align {
+        margin-left: 280px;
+      }
+    }
+    body {
+      overflow-x: hidden;
+    }
+    .pending-count {
+      color: red;
+    }
+  </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
-        <img  class="img-fluid" width="50" height="50" src="logo.jpg" alt="logo">
-        <p class="navbar-brand" >TUTOR HUB</p>
-       
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                      <span class="navbar-toggler-icon"></span>
-                  </button>
-      
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto flex-column vertical-nav bg-primary ">
-            <li class="nav-item">
-
-                <a  class="nav-link" href="home1.html">HOME</a>
-            </li>
-           
-               <li class="nav-item">
-                <a class="nav-link" style="list-style-type: none;" href="{% url 'job_list' %}">JOBS(<span class="pending-count">{{ pending_job_count }}</span>)</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link"href="{% url 'view_jobs' %}">VIEW JOBS</a>
-             </li>
-            <li class="nav-item">
-              <a class="nav-link"href="viewteacher.html">EMPLOYEE</a>
-          </li>
-               <li class="nav-item">
-                <a class="nav-link"href="{% url 'show_jobseeker' %}">JOB SEEKER</a>
-               </li>
-               <li class="nav-item">
-                <a class="nav-link" href="{% url 'admin_approve' %}">APPROVE/DISAPPROVE(<span class="pending-count">{{ total_pending_count }}</span>)</a>
-            </li>
-         
-          <li class="nav-item">
-           <a class="nav-link"href="index.html">LOGOUT</a>
-       </li>
-          </ul>
-      
-        </div>
-      </nav>
-<body >
-    <h1 style="margin-left:350px;">Jobs...</h1>
-    <table class="table table-striped table-borderd table-hover  table-responsive-sm" style="width:70%;margin-left: 350px;" >
-        <thead>
-            <tr class="table-primary">
-                <th>JOB ID</th>
-                <th>JOB NAME</th>
-                <th>COMPANY NAME</th>
-                <th>JOB DESCRIPTION</th>
-                <th>EXPERIENCE</th>
-                <th>FILE</th>
-                <th>SALARY</th>
-                <th>SCHEDULE</th>
-                <th>JOB TYPE</th>
-                <th>LOCATION</th>
-                <th>POSTED ON</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for j in job %}
-            <tr>
-                <td>{{j.id}}</td>
-                <td>{{j.job_title}}</td>
-                <td>{{j.companyname}}</td>
-                <td>{{j.job_des}}</td>
-                <td>{{j.job_exp}}</td>
-                <td>{{j.job_file}}</td>
-                <td>{{j.job_salary}}</td>
-                <td>{{j.job_schedule}}</td>
-                <td>{{j.job_type}}</td>
-                <td>{{j.location}}</td>
-                <td>{{j.posted_on}}</td>
-            </tr>
-            {% endfor %}
-        </tbody> 
+  <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+    <img class="img-fluid" height="40" width="50" src="{% static 'images/logo.jpg' %}" alt="">
+    <a class="navbar-brand" href="">My Job Portal</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto flex-column vertical-nav bg-dark">
+        <li class="nav-item">
+          <a class="nav-link" href="home1.html">HOME</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'job_list' %}">JOBS (<span class="pending-count">{{ pending_job_count }}</span>)</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'view_jobs' %}">VIEW JOBS</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'show_employee' %}">EMPLOYEE</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'show_jobseeker' %}">JOB SEEKER</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'admin_approve' %}">APPROVE/DISAPPROVE (<span class="pending-count">{{ total_pending_count }}</span>)</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">LOGOUT</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="content">
+    <h1>Jobs...</h1>
+    <table class="table table-striped table-bordered table-hover table-responsive-sm" style="width:90%; margin:auto;">
+      <thead>
+        <tr class="table-primary">
+          <th>JOB ID</th>
+          <th>EMPLOYER NAME</th>
+          <th>JOB NAME</th>
+          <th>COMPANY NAME</th>
+          <th>JOB DESCRIPTION</th>
+          <th>EXPERIENCE</th>
+          <th>FILE</th>
+          <th>SALARY</th>
+          <th>SCHEDULE</th>
+          <th>JOB TYPE</th>
+          <th>LOCATION</th>
+          <th>POSTED ON</th>
+          <th>ACTION</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for j in job %}
+        <tr>
+          <td>{{ j.id }}</td>
+          <td>
+            {{ j.user.username }}
+            {% if j.user.employer.is_verified %}
+            <span style="color: green;">&#10004; Verified user</span>
+            {% endif %}
+          </td>
+          <td>{{ j.job_title }}</td>
+          <td>{{ j.companyname }}</td>
+          <td>{{ j.job_des }}</td>
+          <td>{{ j.job_exp }}</td>
+          <td>{{ j.file }}</td>
+          <td>{{ j.job_salary }}</td>
+          <td>{{ j.job_schedule }}</td>
+          <td>{{ j.job_type }}</td>
+          <td>{{ j.location }}</td>
+          <td>{{ j.posted_on }}</td>
+          <td>
+            <form action="{% url 'delete_job' j.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
     </table>
+  </div>
 </body>
 </html>

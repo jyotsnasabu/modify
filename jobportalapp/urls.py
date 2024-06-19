@@ -40,11 +40,19 @@ urlpatterns = [
     path('reject_application/<int:application_id>',views. reject_application, name='reject_application'),
     path('emp_application',views. emp_application, name='emp_application'),
     path('user_profile',views.user_profile,name='user_profile'),
-    # path('show_user',views.show_user,name='show_user'),
-    # path('shows_users',views.shows_users,name='shows_users'),
+    path('show_user/<int:application_id>/', views.show_user, name='show_user'),
+   
     path('about', views.about, name='about'),
     path('apply/<int:job_id>/', views.apply_for_jobs, name='apply_for_jobs'),
     # path('check-new-applications/', views.check_new_applications, name='check_new_applications'),
      path('seeker_applied_job', views.seeker_applied_job, name='seeker_applied_job'),
      path('download-resume/<int:application_id>/', views.download_resume, name='download_resume'),
+     path('verify_employee/<int:employee_id>/',views.verify_employee, name='verify_employee'),
+    path('delete_employee/<int:employee_id>/', views.delete_employee, name='delete_employee'),
+    path('verify_user/<int:user_id>/', views.verify_user, name='verify_user'),
+    path('delete_user/<int:user_id>/', views.delete_user, name='delete_user'),
+
+    path('employer/jobs/', views.job_list_view, name='employer_jobs_list'),
+    path('employer/jobs/<int:pk>/edit/', views.job_edit_view, name='employer_job_edit'),
+    path('delete_job/<int:job_id>/', views.delete_job, name='delete_job'),
 ]

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Job Search</title>
@@ -31,11 +32,15 @@
                 event.preventDefault();
                 var jobTitle = $('#job-title').val();
                 var location = $('#location').val();
+                var postingDate = $('#posting-date').val(); // Added
+                var jobType = $('#job-type').val(); // Added
                 $.ajax({
                     url: '{% url "search_jobs" %}',
                     data: {
                         'job_title': jobTitle,
-                        'location': location
+                        'location': location,
+                        'posting_date': postingDate,
+                        'job_type': jobType
                     },
                     success: function(data) {
                         var jobsList = $('#jobs-list');
@@ -52,46 +57,40 @@
                                             '<p><strong>Company:</strong> ' + job.companyname + '</p>' +
                                             '<p><strong>Description:</strong> ' + job.job_des + '</p>' +
                                             '<p><strong>Experience:</strong> ' + job.job_exp + ' years</p>' +
-                                            '<p><strong>Salary:</strong> ' + job.job_salary + '</p>' +                     
+                                            '<p><strong>Salary:</strong> ' + job.job_salary + '</p>' +
                                             '<p><strong>Location:</strong> ' + job.location + '</p>' +
                                             '<p><strong>Posted on:</strong> ' + job.posted_on + '</p>' +
+                                            '<p><strong>Job Type:</strong> ' + job.job_type + '</p>' +
                                         '</div>' +
                                         '<button class="btn btn-primary apply-button" data-job-id="' + job.id + '">Apply</button>' +
                                     '</div>'
                                 );
                             });
-
-                          
-
-
-         $('.apply-button').on('click', function() {
-        var jobId = $(this).data('job-id');
-        console.log('Applying for job ID:', jobId); // Debugging statement
-
-        $.ajax({
-            url: '{% url "apply_for_jobs" 0 %}'.replace('0', jobId),
-            method: 'POST',
-            data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
-                'job_id': jobId
-            },
-            success: function(response) {
-                console.log('Response from server:', response); // Debugging statement
-                alert(response.message); // Show success message
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX request failed:', status, error); // Debugging statement
-                alert('Failed to apply for the job. Please try again.'); // Show error message
-            }
-    });
-});
-
-
-
                         } else {
                             noResults.show();
                         }
+                    }
+                });
+            });
+            
+            $('#jobs-list').on('click', '.apply-button', function() {
+                var jobId = $(this).data('job-id');
+                console.log('Applying for job ID:', jobId); // Debugging statement
 
+                $.ajax({
+                    url: '{% url "apply_for_jobs" 0 %}'.replace('0', jobId),
+                    method: 'POST',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        'job_id': jobId
+                    },
+                    success: function(response) {
+                        console.log('Response from server:', response); // Debugging statement
+                        alert(response.message); // Show success message
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX request failed:', status, error); // Debugging statement
+                        alert('Failed to apply for the job. Please try again.'); // Show error message
                     }
                 });
             });
@@ -99,21 +98,24 @@
     </script>
 </head>
 <body>
-    <nav class="navbar bg-dark navbar-expand-sm navbar-custom">
-        <img class="img-fluid" height="50" width="50" src="" alt="">
-        <a class="navbar-brand" href="#"></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <nav class="navbar navbar-expand-lg navbar-custom w-100">
+        <img class="img-fluid" height="40" width="50" src="{% static 'images/logo.jpg' %}" alt="">
+        <a class="navbar-brand" href="#">My Job Portal</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                <li class="nav-item"><a class="nav-link active" aria-current="page" href="home.html">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="">PROFILE</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'seeker_applied_job' %}">Applied Jobs</a></li>
+                <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'seeker_home' %}">DASHBOARD</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'user_profile' %}">PROFILE</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'seeker_applied_job' %}">APPLIED JOB</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">LOGOUT</a>
+                </li>
             </ul>
         </div>
     </nav>
-    <marquee width="1800" height="30" direction="right" style="color:red;" id="marquee-message" {% if profile_complete %} style="display:none;" {% endif %}>Please Complete your Profile Before Applying  !!</marquee>
+
     <div class="container">
         <h1>Hi, {{ user.username }}</h1>
         <div class="search-bar">
@@ -137,11 +139,38 @@
                         {% endfor %}
                     </select>
                 </div>
+               
+                <div class="form-group mx-sm-3 mb-2">
+                    <label for="job-type" class="sr-only">Job Type</label>
+                    <select class="form-control" id="job-type" name="job_type">
+                        <option value="">Select Job Type</option>
+                        {% for job_type in job_types %}
+                            <option value="{{ job_type }}">{{ job_type }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
                 <button type="submit" class="btn btn-primary mb-2">Search</button>
             </form>
         </div>
-        <div id="jobs-list" class="job-list"></div>
-        <div id="no-results" class="no-results" style="display: none;">No jobs found</div>
+        <div id="jobs-list" class="job-list">
+            {% for job in jobs %}
+                <div class="job-card">
+                    <div class="job-details">
+                        <h5>{{ job.job_title }}</h5>
+                        <p><strong>Company:</strong> {{ job.companyname }}</p>
+                        <p><strong>Description:</strong> {{ job.job_des }}</p>
+                        <p><strong>Experience:</strong> {{ job.job_exp }} years</p>
+                        <p><strong>Salary:</strong> {{ job.job_salary }}</p>
+                        <p><strong>Location:</strong> {{ job.location }}</p>
+                        <p><strong>Posted on:</strong> {{ job.posted_on }}</p>
+                        <p><strong>Job Type:</strong> {{ job.job_type }}</p>
+                    </div>
+                    <button class="btn btn-primary apply-button" data-job-id="{{ job.id }}">Apply</button>
+                </div>
+            {% empty %}
+                <div class="no-results" id="no-results">No jobs found</div>
+            {% endfor %}
+        </div>
     </div>
 </body>
 </html>

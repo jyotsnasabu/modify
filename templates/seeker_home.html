@@ -95,9 +95,15 @@
                 });
             });
         });
+        function confirmLogout(event) {
+            event.preventDefault();
+            if (confirm("Are you sure you want to logout?")) {
+                document.getElementById('logout-form').submit();
+            }
+        }
     </script>
 </head>
-<body>
+<body >
     <nav class="navbar navbar-expand-lg navbar-custom w-100">
         <img class="img-fluid" height="40" width="50" src="{% static 'images/logo.jpg' %}" alt="">
         <a class="navbar-brand" href="#">My Job Portal</a>
@@ -110,12 +116,15 @@
                 <li class="nav-item"><a class="nav-link" href="{% url 'user_profile' %}">PROFILE</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'seeker_applied_job' %}">APPLIED JOB</a></li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'logout' %}">LOGOUT</a>
+                    <a class="nav-link" href="#" onclick="confirmLogout(event)">LOGOUT</a>
                 </li>
             </ul>
         </div>
     </nav>
-
+    <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
+        {% csrf_token %}
+    </form>
+    <marquee width="800" height="50" direction="right" >Please complete your Profile before applying !!</marquee>
     <div class="container">
         <h1>Hi, {{ user.username }}</h1>
         <div class="search-bar">

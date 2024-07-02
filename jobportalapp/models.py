@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.db import models
 from django.conf import settings
+
 # Create your models here.
 class  CustomUser(AbstractUser):
     user_type=models.CharField(default=1,max_length=10)
@@ -88,7 +89,7 @@ class JobApplication(models.Model):
     def send_acceptance_email(self):
         send_mail(
             'Job Application Accepted',
-            'Your application has been accepted.',
+            'Your application has been accepted.We will contact you soon',
             settings.DEFAULT_FROM_EMAIL,
             [self.user.email]
         )
@@ -96,6 +97,9 @@ class JobApplication(models.Model):
     def __str__(self):
         return f"{self.user.username} applied for {self.job.job_title}"
     
-    
+class Admin_profile(models.Model):
+    user=models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True)
+    mobile=models.IntegerField(null=True)
+    image=models.ImageField(blank=True,upload_to="images/",null=True)
 
 

@@ -68,7 +68,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto flex-column vertical-nav bg-dark">
         <li class="nav-item">
-          <a class="nav-link" href="home1.html">HOME</a>
+          <a class="nav-link" href="{% url 'index3' %}">HOME</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'job_list' %}">JOBS (<span class="pending-count">{{ pending_job_count }}</span>)</a>
@@ -76,6 +76,9 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'view_jobs' %}">VIEW JOBS</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link"href="{% url 'admin_jobs' %}">JOB APPLICANTS</a>
+         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'show_employee' %}">EMPLOYEE</a>
         </li>
@@ -86,7 +89,7 @@
           <a class="nav-link" href="{% url 'admin_approve' %}">APPROVE/DISAPPROVE (<span class="pending-count">{{ total_pending_count }}</span>)</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="index.html">LOGOUT</a>
+          <a class="nav-link" href="{% url 'logout' %}">LOGOUT</a>
         </li>
       </ul>
     </div>
@@ -125,7 +128,9 @@
           <td>{{ j.companyname }}</td>
           <td>{{ j.job_des }}</td>
           <td>{{ j.job_exp }}</td>
-          <td>{{ j.file }}</td>
+          <td>
+            <img src="{{ j.job_file.url }}" style="height:50px; width:50px;">
+          </td>
           <td>{{ j.job_salary }}</td>
           <td>{{ j.job_schedule }}</td>
           <td>{{ j.job_type }}</td>

@@ -70,22 +70,32 @@
           <ul class="navbar-nav mr-auto flex-column vertical-nav bg-dark ">
             <li class="nav-item">
 
-                <a  class="nav-link" href="{% url 'employeer_home' %}">HOME</a>
+                <a  class="nav-link" href="{% url 'adminhome' %}">HOME</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link"href="{% url 'emp_view_profile' %}">PROFILE</a>
+              <a class="nav-link"href="{% url 'admin_profile' request.user.pk %}">PROFILE</a>
+             </li>
+               <li class="nav-item">
+                <a class="nav-link" style="list-style-type: none;" href="{% url 'job_list' %}">JOBS(<span class="pending-count">{{ pending_job_count }}</span>)</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link"href="{% url 'view_jobs' %}">VIEW JOBS</a>
+             </li>
+             <li class="nav-item">
+              <a class="nav-link"href="{% url 'admin_jobs' %}">JOB APPLICANTS</a>
+             </li>
+            <li class="nav-item">
+              <a class="nav-link"href="{% url 'show_employee' %}">EMPLOYEE</a>
           </li>
                <li class="nav-item">
-                <a class="nav-link" style="list-style-type: none;" href="{% url 'jobs' %}">JOBS</a>
+                <a class="nav-link"href="{% url 'show_jobseeker' %}">JOB SEEKER</a>
+               </li>
+               <li class="nav-item">
+                <a class="nav-link" href="{% url 'admin_approve' %}">APPROVE/DISAPPROVE(<span class="pending-count">{{ total_pending_count }}</span>)</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link"href="{% url 'emp_application' %}">APPLICATIONS</a>
+              <a class="nav-link"href="{% url 'admin_password_change' %}">RESET PASSWORD</a>
              </li>
-            
-               <li class="nav-item">
-                <a class="nav-link"href="{% url 'password_reset_form' %}">RESET PASSWORD</a>
-               </li>
-              
           <li class="nav-item">
            <a class="nav-link"href="{% url 'logout' %}">LOGOUT</a>
        </li>
@@ -93,59 +103,28 @@
       
         </div>
       </nav>
-
-  <div class="container mt-5">
-    <div class="row">
-      <div class="col-md-6 offset-md-3">
-        <div class="card">
-          <div class="card-header bg-primary text-white">
-            Edit Profile
-          </div>
-          <div class="card-body">
-            <form action="{% url 'emp_editprofile' emp.pk %}" method="post" enctype="multipart/form-data">
-              {% csrf_token %}
-              <div class="form-group">
-                <label for="companyname">Company Name:</label>
-                <input type="text" class="form-control" id="companyname" name="companyname" value="{{ emp.companyname }}">
+      <div class="container mt-5">
+        <div class="row">
+          <div class="col-md-6 offset-md-3">
+            <div class="card">
+              <div class="card-header bg-primary text-white">
+                Profile Information
               </div>
-              <div class="form-group">
-                <label for="username">User Name:</label>
-                <input type="text" class="form-control" id="username" name="username" value="{{ emp.user.username }}">
+             
+                <h5 class="card-title mt-3">{{ admin_user.username }}</h5>
+                <p class="card-text"> {{ admin_user.email }}</p>
+                <a href="{% url 'admin_profile' admin_user.pk %}" class="btn btn-primary">Go Back</a>
+                
+                <a href="{% url 'edit_admin_page' user.pk %}" class="btn btn-primary">EDIT</a>
               </div>
-              <div class="form-group">
-                <input type="text" name="firstname" placeholder="First Name" required value="{{ emp.user.first_name }}">
             </div>
-            <div class="form-group">
-                <input type="text" name="lastname" placeholder="Last Name" required value="{{ emp.user.last_name }}">
-            </div>
-              <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" class="form-control" id="email" name="email" value="{{ emp.user.email }}">
-              </div>
-              <div class="form-group">
-                <label for="mobile">Mobile Number:</label>
-                <input type="number" class="form-control" id="mobile" name="mobile1" value="{{ emp.mobile }}">
-              </div>
-              <div class="form-group">
-                <label for="address">Address:</label>
-                <input type="text" class="form-control" id="address" name="address" value="{{ emp.address }}">
-              </div>
-              <div class="form-group">
-                <label for="website">Website:</label>
-                <input type="url" class="form-control" id="website" name="website" value="{{ emp.website }}">
-              </div>
-              <div class="form-group">
-                <label for="logo">Logo:</label>
-                <input type="file" class="form-control-file" id="logo" name="logo">
-                <img src="{{ emp.logo.url }}" alt="Company Logo" style="height:100px; width:200px; margin-top: 10px;">
-              </div>
-              <button type="submit" class="btn btn-primary">Save Changes</button>
-            </form>
-            <a href="{% url 'emp_view_profile' %}" class="btn btn-secondary mt-3">Go Back</a>
           </div>
         </div>
       </div>
-    </div>
-  </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

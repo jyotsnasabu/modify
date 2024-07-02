@@ -58,35 +58,43 @@
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-custom">
-    <img class="img-fluid" height="40" width="50" src="{% static 'images/logo.jpg' %}" alt="Logo">
-    <a class="navbar-brand" href="#">My Job Portal</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto flex-column vertical-nav bg-dark">
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'employeer_home' %}">HOME</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'emp_view_profile' %}">PROFILE</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" style="list-style-type: none;" href="{% url 'jobs' %}"> UPLOAD JOBS</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'emp_application' %}">APPLICATIONS</a><span class="badge badge-primary">{{ pending_applications_count }}</span>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'password_reset_form' %}">RESET PASSWORD</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'logout' %}">LOGOUT</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
+  <nav class="navbar navbar-expand-lg navbar-custom ">
+    <img class="img-fluid" height="40" width="50" src="{% static 'images/logo.jpg' %}" alt="">
+    <a class="navbar-brand" href="">My Job Portal</a>
+       
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                      <span class="navbar-toggler-icon"></span>
+                  </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto flex-column vertical-nav bg-dark ">
+            <li class="nav-item">
+
+                <a  class="nav-link" href="{% url 'employeer_home' %}">HOME</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link"href="{% url 'emp_view_profile' %}">PROFILE</a>
+          </li>
+               <li class="nav-item">
+                <a class="nav-link" style="list-style-type: none;" href="{% url 'jobs' %}">ADD JOBS</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link"href="{% url 'emp_application' %}">APPLICATIONS</a>
+             </li>
+            
+               <li class="nav-item">
+                <a class="nav-link"href="{% url 'password_reset_form' %}">RESET PASSWORD</a>
+               </li>
+               <li class="nav-item">
+                <a class="nav-link"href="{% url 'employer_jobs_list' %}">MY JOBS</a>
+               </li>
+          <li class="nav-item">
+           <a class="nav-link"href="{% url 'logout' %}">LOGOUT</a>
+       </li>
+          </ul>
+      
+        </div>
+      </nav>
 
   <div class="container mt-5">
     <h1>Job Applications <span class="badge badge-primary">{{ total_applications_count }}</span></h1>

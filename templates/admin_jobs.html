@@ -72,9 +72,7 @@
 
                 <a  class="nav-link" href="{% url 'adminhome' %}">HOME</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link"href="{% url 'admin_profile' request.user.pk %}">PROFILE</a>
-             </li>
+           
                <li class="nav-item">
                 <a class="nav-link" style="list-style-type: none;" href="{% url 'job_list' %}">JOBS(<span class="pending-count">{{ pending_job_count }}</span>)</a>
             </li>
@@ -82,8 +80,8 @@
               <a class="nav-link"href="{% url 'view_jobs' %}">VIEW JOBS</a>
              </li>
              <li class="nav-item">
-              <a class="nav-link"href="{% url 'admin_jobs' %}">JOB APPLICANTS</a>
-             </li>
+                <a class="nav-link"href="{% url 'admin_jobs' %}">JOB APPLICANTS</a>
+               </li>
             <li class="nav-item">
               <a class="nav-link"href="{% url 'show_employee' %}">EMPLOYEE</a>
           </li>
@@ -94,7 +92,7 @@
                 <a class="nav-link" href="{% url 'admin_approve' %}">APPROVE/DISAPPROVE(<span class="pending-count">{{ total_pending_count }}</span>)</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link"href="{% url 'admin_password_change' %}">RESET PASSWORD</a>
+              <a class="nav-link"href="{% url 'password_reset_form' %}">RESET PASSWORD</a>
              </li>
           <li class="nav-item">
            <a class="nav-link"href="{% url 'logout' %}">LOGOUT</a>
@@ -103,14 +101,57 @@
       
         </div>
       </nav>
-     
-     <h2 style="text-align: center;">WELCOME ADMIN</h2>
-      <p1 class="container">
-        <img class="img-fluid" src="admin.jpg" alt="" style="position:relative;top:30px;">
-        <!-- <img class="img-fluid" src="admin1.jpg" alt="" style="position:relative;top:30px;margin-left:30px;height:200px;width:600px;"> -->
-      </p1>
+    <div class="container mt-5">
+        <h2>Job Applications</h2>
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-responsive-sm">
+            <thead>
+                    <tr>
+                        <th>Job Title</th>
+                        <th>Location</th>
+                        <th>Company Name</th>
+                        <th>Applicant Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in jobs %}
+                        <tr>
+                            <td>{{ job.job_title }}</td>
+                            <td>{{ job.location }}</td>
+                            <td>{{ job.companyname }}</td>
+                            <td>{{ job.applicant_count }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+         <h2>Applications Details</h2>
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-responsive-sm">
+            <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Job Title</th>
+                        <th>Location</th>
+                        
+                        <th>Company Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for application in applications %}
+                        <tr>
+                            <td>{{ application.user.username }}</td>
+                            <td>{{ application.job.job_title }}</td>
+                            <td>{{ application.job.location }}</td>
+                            
+                            <td>{{ application.job.companyname }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-  </div>
-     
 </body>
 </html>

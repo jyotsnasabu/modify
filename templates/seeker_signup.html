@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  {% load static %}
     <style>
         :root {
   --primary-color: #515253;
@@ -36,7 +37,30 @@ body {
   min-height: 100vh;
   overflow: hidden;
 }
-
+.navbar-brand{
+        height: 60px;
+        width: 60px;
+      }
+      .navbar-custom {
+            background-color: #333; /* Dark background */
+        }
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link {
+            color: #ffffff; /* White text */
+        }
+        .navbar-custom .nav-link:hover {
+            color: #f8f9fa; /* Lighter color on hover */
+        }
+      .card{
+        display: block;
+      }
+      li{
+        color: #fff;
+      }
+      body{
+        position:center;
+        overflow-x:hidden;
+      }
 .row {
   display: flex;
   flex-wrap: wrap;
@@ -384,7 +408,7 @@ a{
 </head>
 <body>
     
-
+ 
 <div id="container" class="container">
    
     <div class="row">
@@ -466,6 +490,11 @@ a{
            
             <br>
             <br>
+            <button class="btn" type="reset" >
+              RESET 
+             </button>
+             <br>
+             <br>
             <button>
                 <a style="color:white;text-decoration: none;" href="{% url 'index3' %}">GO BACK</a>
             </button>

@@ -42,65 +42,69 @@
               li:hover{
                 background-color: rgb(100, 105, 100);
               }
-             .content{
-              position: fixed;
-               margin-left:650px;
-               margin-top:60px;
-               overflow-x: hidden;
-             }
-       
-        h1 {
-            margin-left:250px;
-            color: #333;
-        }
-        /* div {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        } */
-        p {
-               position: fixed;
-               margin-left:250px;
-               margin-top:60px;
-               overflow-x: hidden;
-             }
-        
-        /* Button styling */
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-right: 10px;
-        }
-        .approve {
-            background-color: #4CAF50; /* Green */
-            color: white;
-        }
-        .disapprove {
-            background-color: #f44336; /* Red */
-            color: white;
-        }
-        /* Responsive styling */
-        @media (max-width: 600px) {
-            div {
-                padding: 10px;
-            }
-            button {
-                width: 100%;
-                margin-top: 10px;
-                margin-right: 0;
-            }
-        }
-      
+    .content {
+      margin: 20px;
+      padding: 20px;
     }
-    </style>
+    h1 {
+      margin-left: 200px;
+      color: #333;
+    }
+    .job-listing {
+      margin-left: 200px;
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-right: 10px;
+    }
+    .approve {
+      background-color: #4CAF50; /* Green */
+      color: white;
+    }
+    .disapprove {
+      background-color: #f44336; /* Red */
+      color: white;
+    }
+    .approve a, .disapprove a {
+      color: white;
+      text-decoration: none;
+    }
+    @media (max-width: 992px) {
+      .content {
+        margin: 10px;
+      }
+    }
+    @media (max-width: 600px) {
+      .content {
+        padding: 10px;
+      }
+      button {
+        width: 100%;
+        margin-top: 10px;
+      }
+    }
+  }
+  </style>
+  <script>
+    function confirmLogout(event) {
+      event.preventDefault();
+      if (confirm("Are you sure you want to logout?")) {
+        window.location.href = "{% url 'logout' %}";
+      }
+    }
+  </script>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-custom ">
+  <nav class="navbar navbar-expand-lg navbar-custom ">
     <img class="img-fluid" height="40" width="50" src="{% static 'images/logo.jpg' %}" alt="">
     <a class="navbar-brand" href="">My Job Portal</a>
        
@@ -121,6 +125,9 @@
             <li class="nav-item">
               <a class="nav-link"href="{% url 'view_jobs' %}">VIEW JOBS</a>
              </li>
+             <li class="nav-item">
+              <a class="nav-link"href="{% url 'admin_jobs' %}">JOB APPLICANTS</a>
+             </li>
             <li class="nav-item">
               <a class="nav-link"href="{% url 'show_employee' %}">EMPLOYEE</a>
           </li>
@@ -130,34 +137,35 @@
                <li class="nav-item">
                 <a class="nav-link" href="{% url 'admin_approve' %}">APPROVE/DISAPPROVE(<span class="pending-count">{{ total_pending_count }}</span>)</a>
             </li>
-         
+            <li class="nav-item">
+              <a class="nav-link"href="{% url 'password_reset_form' %}">RESET PASSWORD</a>
+             </li>
           <li class="nav-item">
-           <a class="nav-link"href="index.html">LOGOUT</a>
+           <a class="nav-link"href="{% url 'logout' %}">LOGOUT</a>
        </li>
           </ul>
       
         </div>
       </nav>
-     
-
+  <div class="content">
     <h1>Pending Job Registrations</h1>
     {% for j in jobs %}
-        <div>
-            <p><strong>Job Title:</strong> {{ j.job_title }}</p>
-            <p><strong>Company Name:</strong> {{ j.companyname }}</p>
-            <form method="post" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" name="approve_employer"  class="approve" >
-                    <a href="{% url 'approve_job' j.id %}" >Approve</a></button>
-
-                <button type="submit" name="disapprove_employer"  class="disapprove" >
-                    <a href="{% url 'disapprove_job' j.id %}" >Disapprove</a></button>
-                
-            </form>
-
-        </div>
-        <hr>
+      <div class="job-listing">
+        <p><strong>Job Title:</strong> {{ j.job_title }}</p>
+        <p><strong>Company Name:</strong> {{ j.companyname }}</p>
+        <form method="post" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" name="approve_employer" class="approve">
+            <a href="{% url 'approve_job' j.id %}">Approve</a>
+          </button>
+          <button type="submit" name="disapprove_employer" class="disapprove">
+            <a href="{% url 'disapprove_job' j.id %}">Disapprove</a>
+          </button>
+        </form>
+      </div>
+      <hr>
     {% endfor %}
-    <button><a href="{% url 'adminhome'  %}" >Back</a></button>
+    
+  </div>
 </body>
 </html>

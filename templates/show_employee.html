@@ -92,6 +92,9 @@
           <a class="nav-link" href="{% url 'view_jobs' %}">VIEW JOBS</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link"href="{% url 'admin_jobs' %}">JOB APPLICANTS</a>
+         </li>
+        <li class="nav-item">
           <a class="nav-link" href="{% url 'show_employee' %}">EMPLOYEE</a>
         </li>
         <li class="nav-item">
@@ -117,7 +120,7 @@
               <th>Company Name</th>
               <th>Name</th>
               <th>Email ID</th>
-              <th>Mobile</th>
+              
               <th>Logo</th>
               <th>Website</th>
               <th>Address</th>
@@ -134,7 +137,7 @@
                   
                 </td>
                 <td>{{ employee.user.email }}</td>
-                <td>{{ employee.mobile }}</td>
+                
                 <td>
                   <img src="{{ employee.logo.url }}" style="height:50px; width:50px;">
                 </td>

@@ -55,4 +55,11 @@ urlpatterns = [
     path('employer/jobs/', views.job_list_view, name='employer_jobs_list'),
     path('employer/jobs/<int:pk>/edit/', views.job_edit_view, name='employer_job_edit'),
     path('delete_job/<int:job_id>/', views.delete_job, name='delete_job'),
-]
+    path('admin_jobs/',views.admin_jobs, name='admin_jobs'),
+    path('admin_password_change', views.admin_password_change, name='admin_password_change'),
+    path('admin_profile/<int:pk>/',views.admin_profile,name='admin_profile'),
+
+    path('edit_admin_page/<int:pk>',views.edit_admin_page,name='edit_admin_page'),
+    path('editadmin/<int:pk>/',views.editadmin,name='editadmin'),
+    path('edit_admin',views.edit_admin,name='edit_admin'),
+] 

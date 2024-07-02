@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect , get_object_or_404
 from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
-from jobportalapp.models import Usermember,CustomUser,Employee,Job_details,Job,Profile,JobApplication
+from jobportalapp.models import Usermember,CustomUser,Employee,Job_details,Job,Profile,JobApplication,Admin_profile
 from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.models import User,auth
@@ -20,6 +20,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.files.storage import FileSystemStorage
 import json
+from django.db.models import Count
 from django.contrib.auth.hashers import make_password
 from django.urls import reverse
 
@@ -156,7 +157,7 @@ def seeker_home(request):
         'job_titles': job_titles,
         'locations': locations,
         'job_types': job_types,
-        'profile_complete': request.user.profile.is_complete,  
+          
     })
 
 def search_jobs(request):
@@ -243,7 +244,7 @@ def emp_view_profile(request):
     employee=Employee.objects.get(user_id=user)
     return render(request,"emp_view_profile.html",{'emp':employee})
 def emp_edit_profilepage(request,pk):
-    user=Usermember.objects.get(id=pk)
+    user=CustomUser.objects.get(id=pk)
     employee=Employee.objects.get(id=pk)
     return render(request,"emp_edit_profile.html",{'emp':employee,'user':user})
 def emp_edit_profile(request):
@@ -256,6 +257,8 @@ def emp_editprofile(request, pk):
     if request.method == 'POST':
         emp.companyname = request.POST.get('companyname')
         emp.user.username = request.POST.get('username')
+        emp.user.first_name = request.POST.get('firstname')
+        emp.user.last_name = request.POST.get('lastname')
         emp.user.email = request.POST.get('email')
         emp.mobile = request.POST.get('mobile1')
         emp.address = request.POST.get('address')
@@ -282,8 +285,9 @@ def emp_editprofile(request, pk):
 
 @login_required
 def password_reset_form(request):
-    
     return render(request, 'password_reset_form.html')
+def admin_password_change(request):
+    return render(request, 'admin_password_change.html')
 @login_required
 @require_POST
 @csrf_exempt    
@@ -315,7 +319,7 @@ def add_job(request):
     file = request.FILES.get('file')
     posted_on = request.POST.get('posted_on')
     user_id = request.POST.get('userId')
-    employee_id = request.POST.get('employeeId')
+    
     job = Job_details(
         job_title=job_title,
         companyname=company_name,
@@ -328,7 +332,7 @@ def add_job(request):
         job_file=file,
         posted_on=posted_on,
         user_id=user_id,
-        employee_id=employee_id
+        
     )
     job.save()
     return redirect('jobs')
@@ -615,3 +619,46 @@ def delete_job(request, job_id):
     job = get_object_or_404(Job, id=job_id)
     job.delete()
     return redirect('view_jobs') 
+def admin_jobs(request):
+    jobs = Job.objects.annotate(applicant_count=Count('jobapplication'))
+    applications =JobApplication.objects.all()
+
+    context = {
+        'jobs': jobs,
+        'applications': applications
+    }
+    
+    return render(request, 'admin_jobs.html', context)
+@login_required  # Ensure the user is authenticated to view this page
+def admin_profile(request, pk):
+    User = get_user_model() 
+    admin_user = get_object_or_404(User, pk=pk)
+    return render(request, 'admin_profile.html',{'admin_user':admin_user})
+def edit_admin_page(request,pk):
+    user=CustomUser.objects.get(id=pk)
+    
+    return render(request,"edit_admin.html",{'user':user})
+def edit_admin(request):
+     return render(request, 'edit_admin.html')
+@login_required
+
+
+def editadmin(request, pk):
+    user = get_object_or_404(CustomUser, id=pk)
+    
+    if request.method == 'POST':
+        user_name = request.POST['username']
+        email = request.POST['email']
+        
+        if CustomUser.objects.filter(username=user_name).exclude(id=pk).exists():
+            messages.info(request, 'This username already exists')
+            return redirect('edit_admin', pk=pk)
+        else:
+            # Update the CustomUser instance
+            user.username = user_name
+            user.email = email
+            user.save()
+            messages.success(request, 'Profile updated successfully')
+            return redirect('edit_admin')
+    
+    return render(request, 'edit_admin.html', {'user': user})

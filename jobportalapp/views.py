@@ -244,9 +244,9 @@ def emp_view_profile(request):
     employee=Employee.objects.get(user_id=user)
     return render(request,"emp_view_profile.html",{'emp':employee})
 def emp_edit_profilepage(request,pk):
-    user=CustomUser.objects.get(id=pk)
+    
     employee=Employee.objects.get(id=pk)
-    return render(request,"emp_edit_profile.html",{'emp':employee,'user':user})
+    return render(request,"emp_edit_profile.html",{'emp':employee})
 def emp_edit_profile(request):
      return render(request, 'edit_profile.html')
 @login_required
@@ -255,34 +255,44 @@ def emp_editprofile(request, pk):
     print(f"Employer PK: {emp.pk}, User ID: {emp.user.id}")  # Debugging line
 
     if request.method == 'POST':
-        emp.companyname = request.POST.get('companyname')
-        emp.user.username = request.POST.get('username')
-        emp.user.first_name = request.POST.get('firstname')
-        emp.user.last_name = request.POST.get('lastname')
-        emp.user.email = request.POST.get('email')
-        emp.mobile = request.POST.get('mobile1')
-        emp.address = request.POST.get('address')
-        emp.website = request.POST.get('website')
+        # Validate username
+        new_username = request.POST.get('username')
+        new_email = request.POST.get('email')
+        if not new_username.isalnum():
+            messages.error(request, "Username should be alphanumeric.")
+        elif CustomUser.objects.filter(username=new_username).exclude(pk=emp.user.pk).exists():
+            messages.error(request, "Username is already taken.")
+        elif CustomUser.objects.filter(email=new_email).exclude(pk=emp.user.pk).exists():
+            messages.error(request, "Email is already taken.")
+        else:
+            emp.companyname = request.POST.get('companyname')
+            emp.user.username = new_username
+            emp.user.first_name = request.POST.get('firstname')
+            emp.user.last_name = request.POST.get('lastname')
+            emp.user.email = request.POST.get('email')
+            emp.mobile = request.POST.get('mobile1')
+            emp.address = request.POST.get('address')
+            emp.website = request.POST.get('website')
 
-        if 'logo' in request.FILES:
+            if 'logo' in request.FILES:
                 try:
-        # Check if the employer has an existing logo
-                   if emp.logo:
-            # If there's an existing logo, remove it
+                    # Check if the employer has an existing logo
+                    if emp.logo:
+                        # If there's an existing logo, remove it
                         os.remove(emp.logo.path)
                         print("Existing image removed successfully")
                 except Exception as e:
                     print("Error removing existing image:", e)
 
-        # Assign the new logo
-        emp.logo = request.FILES['logo']
-        emp.user.save()  # Save the related user instance
-        emp.save()  # Save the employer instance with the new logo
+                # Assign the new logo
+                emp.logo = request.FILES['logo']
 
-        return redirect('emp_view_profile')
+            emp.user.save()  # Save the related user instance
+            emp.save()  # Save the employer instance with the new logo
+
+            return redirect('emp_view_profile')
 
     return render(request, 'emp_edit_profile.html', {'emp': emp})
-
 @login_required
 def password_reset_form(request):
     return render(request, 'password_reset_form.html')

@@ -22,6 +22,12 @@
         .navbar-custom .nav-link {
             color: #ffffff; /* White text */
         }
+
+        .navbar-custom .nav-link1 {
+            color: #2fdf0c; 
+            font-size: xx-large;
+        }
+
         .navbar-custom .nav-link:hover {
             color: #f8f9fa; /* Lighter color on hover */
         }   
@@ -68,6 +74,12 @@
       
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto flex-column vertical-nav bg-dark ">
+
+            <li class="nav-item">
+
+              <a  class="nav-link1" >Hi, {{user.username}}</a>
+          </li>
+
             <li class="nav-item">
 
                 <a  class="nav-link" href="{% url 'employeer_home' %}">HOME</a>
@@ -96,7 +108,9 @@
         </div>
       </nav>
       <p1 class="container">
-        <h2 style="text-align: center;">welcome {{user.rsername}}</h2>
+        <h2 style="text-align: center;">welcome {{ user.username }}
+        </h2>
+
         <img class="img-fluid" src="admin.jpg" alt="" style="position:relative;top:30px;">
         <!-- <img class="img-fluid" src="admin1.jpg" alt="" style="position:relative;top:30px;margin-left:30px;height:200px;width:600px;"> -->
       </p1>

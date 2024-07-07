@@ -70,37 +70,38 @@
           <ul class="navbar-nav mr-auto flex-column vertical-nav bg-dark ">
             <li class="nav-item">
 
-                <a  class="nav-link" href="{% url 'adminhome' %}">HOME</a>
+                <a  class="nav-link" href="{% url 'employeer_home' %}">HOME</a>
             </li>
             <li class="nav-item">
               <a class="nav-link"href="{% url 'admin_profile' request.user.pk %}">PROFILE</a>
-             </li>
-               <li class="nav-item">
-                <a class="nav-link" style="list-style-type: none;" href="{% url 'job_list' %}">JOBS(<span class="pending-count">{{ pending_job_count }}</span>)</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link"href="{% url 'view_jobs' %}">VIEW JOBS</a>
-             </li>
-             <li class="nav-item">
-              <a class="nav-link"href="{% url 'admin_jobs' %}">JOB APPLICANTS</a>
-             </li>
-            <li class="nav-item">
-              <a class="nav-link"href="{% url 'show_employee' %}">EMPLOYEE</a>
           </li>
-               <li class="nav-item">
-                <a class="nav-link"href="{% url 'show_jobseeker' %}">JOB SEEKER</a>
-               </li>
-               <li class="nav-item">
-                <a class="nav-link" href="{% url 'admin_approve' %}">APPROVE/DISAPPROVE(<span class="pending-count">{{ total_pending_count }}</span>)</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link"href="{% url 'admin_password_change' %}">RESET PASSWORD</a>
-             </li>
-          <li class="nav-item">
-           <a class="nav-link"href="{% url 'logout' %}">LOGOUT</a>
-       </li>
+        </li>
+           
+        <li class="nav-item">
+         <a class="nav-link" style="list-style-type: none;" href="{% url 'job_list' %}">JOBS(<span class="pending-count">{{ pending_job_count }}</span>)</a>
+     </li>
+     <li class="nav-item">
+       <a class="nav-link"href="{% url 'view_jobs' %}">VIEW JOBS</a>
+      </li>
+      <li class="nav-item">
+         <a class="nav-link"href="{% url 'admin_jobs' %}">JOB APPLICANTS</a>
+        </li>
+     <li class="nav-item">
+       <a class="nav-link"href="{% url 'show_employee' %}">EMPLOYEE</a>
+   </li>
+        <li class="nav-item">
+         <a class="nav-link"href="{% url 'show_jobseeker' %}">JOB SEEKER</a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="{% url 'admin_approve' %}">APPROVE/DISAPPROVE(<span class="pending-count">{{ total_pending_count }}</span>)</a>
+     </li>
+     <li class="nav-item">
+       <a class="nav-link"href="{% url 'password_reset_form' %}">RESET PASSWORD</a>
+      </li>
+   <li class="nav-item">
+    <a class="nav-link"href="{% url 'logout' %}">LOGOUT</a>
+</li>
           </ul>
-      
         </div>
       </nav>
      

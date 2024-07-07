@@ -114,7 +114,7 @@
                 <h5 class="card-title mt-3">{{ admin_user.username }}</h5>
                 <p class="card-text"> {{ admin_user.email }}</p>
                 <a href="{% url 'admin_profile' admin_user.pk %}" class="btn btn-primary">Go Back</a>
-                
+                <br>
                 <a href="{% url 'edit_admin_page' user.pk %}" class="btn btn-primary">EDIT</a>
               </div>
             </div>

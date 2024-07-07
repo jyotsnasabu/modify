@@ -27,81 +27,76 @@
         .navbar-toggler-icon { background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%288, 8, 8, 0.5%29' stroke-width='2' linecap='round' linejoin='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"); }
     </style>
     <script>
-        $(document).ready(function() {
-            $('#search-form').on('submit', function(event) {
-                event.preventDefault();
-                var jobTitle = $('#job-title').val();
-                var location = $('#location').val();
-                var postingDate = $('#posting-date').val(); // Added
-                var jobType = $('#job-type').val(); // Added
-                $.ajax({
-                    url: '{% url "search_jobs" %}',
-                    data: {
-                        'job_title': jobTitle,
-                        'location': location,
-                        'posting_date': postingDate,
-                        'job_type': jobType
-                    },
-                    success: function(data) {
-                        var jobsList = $('#jobs-list');
-                        var noResults = $('#no-results');
-                        jobsList.empty();
-                        if (data.length > 0) {
-                            noResults.hide();
-                            data.forEach(function(job) {
-                                var imageUrl = job.job_file ? job.job_file : 'default_image_url.jpg';
-                                jobsList.append(
-                                    '<div class="job-card">' +
-                                        '<div class="job-details">' +
-                                            '<h5>' + job.job_title + '</h5>' +
-                                            '<p><strong>Company:</strong> ' + job.companyname + '</p>' +
-                                            '<p><strong>Description:</strong> ' + job.job_des + '</p>' +
-                                            '<p><strong>Experience:</strong> ' + job.job_exp + ' years</p>' +
-                                            '<p><strong>Salary:</strong> ' + job.job_salary + '</p>' +
-                                            '<p><strong>Location:</strong> ' + job.location + '</p>' +
-                                            '<p><strong>Posted on:</strong> ' + job.posted_on + '</p>' +
-                                            '<p><strong>Job Type:</strong> ' + job.job_type + '</p>' +
-                                        '</div>' +
-                                        '<button class="btn btn-primary apply-button" data-job-id="' + job.id + '">Apply</button>' +
-                                    '</div>'
-                                );
-                            });
-                        } else {
-                            noResults.show();
-                        }
-                    }
-                });
-            });
-            
-            $('#jobs-list').on('click', '.apply-button', function() {
-                var jobId = $(this).data('job-id');
-                console.log('Applying for job ID:', jobId); // Debugging statement
-
-                $.ajax({
-                    url: '{% url "apply_for_jobs" 0 %}'.replace('0', jobId),
-                    method: 'POST',
-                    data: {
-                        'csrfmiddlewaretoken': '{{ csrf_token }}',
-                        'job_id': jobId
-                    },
-                    success: function(response) {
-                        console.log('Response from server:', response); // Debugging statement
-                        alert(response.message); // Show success message
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('AJAX request failed:', status, error); // Debugging statement
-                        alert('Failed to apply for the job. Please try again.'); // Show error message
-                    }
-                });
-            });
-        });
-        function confirmLogout(event) {
-            event.preventDefault();
-            if (confirm("Are you sure you want to logout?")) {
-                document.getElementById('logout-form').submit();
+    $(document).ready(function() {
+    $('#search-form').on('submit', function(event) {
+        event.preventDefault();
+        var jobTitle = $('#job-title').val();
+        var location = $('#location').val();
+        var postingDate = $('#posting-date').val();
+        var jobType = $('#job-type').val();
+        $.ajax({
+            url: '{% url "search_jobs" %}',
+            data: {
+                'job_title': jobTitle,
+                'location': location,
+                'posting_date': postingDate,
+                'job_type': jobType
+            },
+            success: function(data) {
+                var jobsList = $('#jobs-list');
+                var noResults = $('#no-results');
+                jobsList.empty();
+                if (data.length > 0) {
+                    noResults.hide();
+                    data.forEach(function(job) {
+                        var imageUrl = job.job_file ? job.job_file : 'default_image_url.jpg';
+                        jobsList.append(
+                            '<div class="job-card">' +
+                                '<div class="job-details">' +
+                                    '<h5>' + job.job_title + '</h5>' +
+                                    '<p><strong>Company:</strong> ' + job.companyname + '</p>' +
+                                    '<p><strong>Description:</strong> ' + job.job_des + '</p>' +
+                                    '<p><strong>Experience:</strong> ' + job.job_exp + ' years</p>' +
+                                    '<p><strong>Salary:</strong> ' + job.job_salary + '</p>' +
+                                    '<p><strong>Location:</strong> ' + job.location + '</p>' +
+                                    '<p><strong>Posted on:</strong> ' + job.posted_on + '</p>' +
+                                    '<p><strong>Job Type:</strong> ' + job.job_type + '</p>' +
+                                '</div>' +
+                                '<button class="btn btn-primary apply-button" data-job-id="' + job.id + '">Apply</button>' +
+                            '</div>'
+                        );
+                    });
+                } else {
+                    noResults.show();
+                }
             }
-        }
-    </script>
+        });
+    });
+
+    $('#jobs-list').on('click', '.apply-button', function() {
+        var jobId = $(this).data('job-id');
+        console.log('Applying for job ID:', jobId);
+
+        $.ajax({
+            url: '{% url "apply_for_jobs" 0 %}'.replace('0', jobId),
+            method: 'POST',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'job_id': jobId
+            },
+            success: function(response) {
+                console.log('Response from server:', response);
+                alert(response.message);
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX request failed:', status, error);
+                alert(xhr.responseJSON.message);
+            }
+        });
+    });
+});
+
+</script>    
 </head>
 <body >
     <nav class="navbar navbar-expand-lg navbar-custom w-100">
@@ -124,7 +119,7 @@
     <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
         {% csrf_token %}
     </form>
-    <marquee width="800" height="50" direction="right" >Please complete your Profile before applying !!</marquee>
+    <marquee width="1500" height="50" direction="right" style="color:red;">Please complete your Profile before applying !!</marquee>
     {% if messages %}
     <ul class="messages">
         {% for message in messages %}

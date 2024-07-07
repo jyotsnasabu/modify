@@ -96,7 +96,8 @@
         .form-group input[type="email"],
         .form-group input[type="number"],
         .form-group input[type="date"],
-        .form-group textarea {
+        .form-group textarea,
+        .form-group select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -215,6 +216,29 @@
                 <label for="address">Address</label>
                 <textarea id="address" name="address" rows="4" required>{{ profile.address }}</textarea>
             </div>
+            <div class="form-group">
+                <label for="jobType">Qualification</label>
+                <select id="qualification" name="qualification" required value="{{ profile.qualification }}">
+                    <option value="post_graduate" {% if profile.qualification == "post_graduate" %}selected{% endif %}>Post Graduate</option>
+                    <option value="graduate" {% if profile.qualification == "graduate" %}selected{% endif %}>Graduate</option>
+                    <option value="plus_two" {% if profile.qualification == "plus_two" %}selected{% endif %}>Plus Two</option>
+                    <option value="diploma" {% if profile.qualification == "diploma" %}selected{% endif %}>Diploma</option>
+                </select>
+              </div>
+            <div class="form-group">
+                <label for="jobexp">Experience:</label>
+                <select id="jobexp" name="jobexp" required value="{{ profile.exp }}">
+                    <option value="0" {% if profile.exp == "0" %}selected{% endif %}>0</option>
+                    <option value="1" {% if profile.exp == "1" %}selected{% endif %}>1</option>
+                    <option value="2" {% if profile.exp == "2" %}selected{% endif %}>2</option>
+                    <option value="3" {% if profile.exp == "3" %}selected{% endif %}>3</option>
+                    <option value="4" {% if profile.exp == "4" %}selected{% endif %}>4</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="description">Job Description:</label>
+                <textarea id="description" name="description" rows="4" required>{{ profile.job_des }}</textarea>
+              </div>
             <div class="form-group">
                 <label for="resume">Resume</label>
                 <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required>{{ profile.resume }}

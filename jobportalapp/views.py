@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect , get_object_or_404
 from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
-from jobportalapp.models import Usermember,CustomUser,Employee,Job_details,Job,Profile,JobApplication,Admin_profile
+from jobportalapp.models import Usermember,CustomUser,Employee,Job_details,Job,Profile,JobApplication
 from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.models import User,auth
@@ -51,7 +51,7 @@ def login1(request):
                     return redirect('loginform')
             else:
                 auth.login(request, user)
-                messages.info(request, f'Welcome {username}')
+                #messages.info(request, f'Welcome {username}')
                 return redirect('seeker_home')
         else:
             messages.error(request, "Invalid username or password")
@@ -470,7 +470,9 @@ def user_profile(request):
         
         # Update Profile fields
         profile.address = request.POST.get('address', profile.address)
-        
+        profile.qualification = request.POST.get('qualification', profile.qualification)
+        profile.job_des = request.POST.get('description', profile.job_des)
+        profile.exp = request.POST.get('jobexp', profile.exp)
         if 'resume' in request.FILES:
             profile.resume = request.FILES['resume']
         if 'profileimage' in request.FILES:
@@ -508,6 +510,10 @@ def apply_for_jobs(request, job_id):
             user = request.user
             job = Job.objects.get(id=job_id)
             
+            # Check if the user has completed their profile
+            if not user.profile.is_profile_complete():
+                return JsonResponse({'success': False, 'message': 'Please complete your profile before applying.'}, status=400)
+            
             job_application = JobApplication.objects.create(
                 user=user,
                 job=job,
@@ -525,6 +531,7 @@ def apply_for_jobs(request, job_id):
     
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method or not AJAX.'}, status=400)
+
 
 
 @login_required

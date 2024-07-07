@@ -10,7 +10,6 @@ class  CustomUser(AbstractUser):
     user_type=models.CharField(default=1,max_length=10)
 class Usermember(models.Model):
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True)
-
     mobile=models.IntegerField(null=True)
     dob=models.DateField(null=True)
     is_approved = models.BooleanField(default=False)
@@ -67,15 +66,27 @@ class Job(models.Model):
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='profile')
-    user_img=models.ImageField(blank=True,upload_to="images/",null=True)
-    address=models.CharField(max_length=255,null=True)
-    resume = models.FileField(upload_to='resumes/',null=True)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='profile', null=True, blank=True)
+    user_img = models.ImageField(blank=True, upload_to="images/", null=True)
+    address = models.CharField(max_length=255, null=True)
+    qualification = models.CharField(max_length=255, null=True)
+    exp = models.CharField(max_length=255, null=True)
+    job_des = models.CharField(max_length=255, null=True)
+    resume = models.FileField(upload_to='resumes/', null=True)
     dob = models.ForeignKey(Usermember, on_delete=models.CASCADE, related_name='profile_dob', null=True, blank=True)
     mobile = models.ForeignKey(Usermember, on_delete=models.CASCADE, related_name='profile_mobile', null=True, blank=True)
     is_complete = models.BooleanField(default=False)
+
     def __str__(self):
         return self.user.username
+
+    def is_profile_complete(self):
+        required_fields = [
+            self.user_img, self.address, self.qualification, self.exp,
+            self.job_des, self.resume, self.dob, self.mobile
+        ]
+        return all(required_fields)
+
 
 class JobApplication(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -97,9 +108,5 @@ class JobApplication(models.Model):
     def __str__(self):
         return f"{self.user.username} applied for {self.job.job_title}"
     
-class Admin_profile(models.Model):
-    user=models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True)
-    mobile=models.IntegerField(null=True)
-    image=models.ImageField(blank=True,upload_to="images/",null=True)
 
 

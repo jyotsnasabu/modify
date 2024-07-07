@@ -86,6 +86,9 @@
           <a class="nav-link" href="home1.html">HOME</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link"href="{% url 'admin_profile' request.user.pk %}">PROFILE</a>
+         </li>
+        <li class="nav-item">
           <a class="nav-link" href="{% url 'job_list' %}">JOBS(<span class="pending-count">{{ pending_job_count }}</span>)</a>
         </li>
         <li class="nav-item">

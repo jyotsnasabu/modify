@@ -511,29 +511,43 @@
         }
     
         function checkEmail(email) {
-            if (!email) {
+    if (!email) {
+        emailError.style.display = 'none';
+        emailExists = false;
+        return;
+    }
+
+    if (!validateEmail(email)) {
+        alert('Invalid email address. Email must include ".com"');
+        emailError.style.display = 'none';
+        emailExists = false;
+        return;
+    }
+
+    fetch(`/check_email/?email=${email}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.exists) {
+                alert('Email already exists.');
+                emailError.style.display = 'block';
+                emailExists = true;
+            } else {
                 emailError.style.display = 'none';
                 emailExists = false;
-                return;
             }
-    
-            fetch(`/check_email/?email=${email}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.exists) {
-                        emailError.style.display = 'block';
-                        emailExists = true;
-                    } else {
-                        emailError.style.display = 'none';
-                        emailExists = false;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    emailError.style.display = 'none';
-                    emailExists = false;
-                });
-        }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            emailError.style.display = 'none';
+            emailExists = false;
+        });
+}
+
+function validateEmail(email) {
+    var re = /\S+@\S+\.\S+\.com$/;
+    return re.test(email);
+}
+
     
         setTimeout(() => {
             container.classList.add("sign-in");

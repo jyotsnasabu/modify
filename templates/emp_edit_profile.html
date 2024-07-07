@@ -68,6 +68,9 @@
       
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto flex-column vertical-nav bg-dark ">
+            <li class="nav-item" style="color:#f8f8f8;">
+              Hi, {{ user.username }}
+           </li>
             <li class="nav-item">
 
                 <a  class="nav-link" href="{% url 'employeer_home' %}">HOME</a>
@@ -134,7 +137,7 @@
               </div>
               <div class="form-group">
                 <label for="mobile">Mobile Number:</label>
-                <input type="number" class="form-control" id="mobile" name="mobile1" value="{{ emp.mobile }}">
+                <input type="number" class="form-control" id="mobile" name="mobile1" pattern="[0-9]{10}" value="{{ emp.mobile }}">
               </div>
               <div class="form-group">
                 <label for="address">Address:</label>

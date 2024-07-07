@@ -44,8 +44,8 @@
       }
       .content {
         position: fixed;
-        margin-left: 200px;
-        margin-top: 60px;
+        margin-left: 250px;
+        margin-top: 90px;
         overflow-x: hidden;
       }
       .align {
@@ -54,11 +54,16 @@
       .pending-count {
         color: red;
       }
+      .container{
+        position: relative;
+        margin-top: 290px;
+        margin-left: 250px;
+      }
     }
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-custom ">
+  <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
     <img class="img-fluid" height="40" width="50" src="{% static 'images/logo.jpg' %}" alt="">
     <a class="navbar-brand" href="">My Job Portal</a>
        
@@ -68,6 +73,9 @@
       
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto flex-column vertical-nav bg-dark ">
+            <li class="nav-item" style="color:#f8f8f8;">
+              Hi, {{ user.username }}
+           </li>
             <li class="nav-item">
 
                 <a  class="nav-link" href="{% url 'employeer_home' %}">HOME</a>

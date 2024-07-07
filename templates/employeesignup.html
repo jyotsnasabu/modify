@@ -510,19 +510,19 @@
             return true;
         }
     
-        function checkEmail(email) {
+    function checkEmail(email) {
     if (!email) {
         emailError.style.display = 'none';
         emailExists = false;
         return;
     }
 
-    if (!validateEmail(email)) {
-        alert('Invalid email address. Email must include ".com"');
-        emailError.style.display = 'none';
-        emailExists = false;
-        return;
-    }
+    // if (!validateEmail(email)) {
+    //     alert('Invalid email address. Email must include ".com"');
+    //     emailError.style.display = 'none';
+    //     emailExists = false;
+    //     return;
+    // }
 
     fetch(`/check_email/?email=${email}`)
         .then(response => response.json())

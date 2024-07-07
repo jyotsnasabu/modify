@@ -83,7 +83,7 @@ class Profile(models.Model):
     def is_profile_complete(self):
         required_fields = [
             self.user_img, self.address, self.qualification, self.exp,
-            self.job_des, self.resume, self.dob, self.mobile
+            self.job_des, self.resume
         ]
         return all(required_fields)
 

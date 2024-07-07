@@ -219,6 +219,7 @@
             <div class="form-group">
                 <label for="jobType">Qualification</label>
                 <select id="qualification" name="qualification" required value="{{ profile.qualification }}">
+                    <option value="select" >select</option>
                     <option value="post_graduate" {% if profile.qualification == "post_graduate" %}selected{% endif %}>Post Graduate</option>
                     <option value="graduate" {% if profile.qualification == "graduate" %}selected{% endif %}>Graduate</option>
                     <option value="plus_two" {% if profile.qualification == "plus_two" %}selected{% endif %}>Plus Two</option>

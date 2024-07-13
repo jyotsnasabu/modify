@@ -19,7 +19,7 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.files.storage import FileSystemStorage
-import json
+import json,re
 from django.db.models import Count
 from django.contrib.auth.hashers import make_password
 from django.urls import reverse
@@ -63,34 +63,123 @@ def employeesignup(request):
 def seeker_signup(request):
     return render(request,'seeker_signup.html')
 def add_user(request):
-    username=request.POST['user_name']
-    useremail=request.POST['email']
-    usermobile=request.POST['mobile1']
-    userdob=request.POST['dob']
-    user1=Usermember(name=username,email=useremail,mobile=usermobile,dob=userdob)
-    user1.save()
-    return redirect('/')
-def add_user(request):
     if request.method == 'POST':
-        first_name=request.POST['firstname']
-        user_name=request.POST['user_name']
-        last_name=request.POST['lastname']
-        email=request.POST['email']
-        user_type=request.POST['text']
-        if CustomUser.objects.filter(username=user_name).exists():
-            messages.info(request,'This username already exists')
-            return redirect('seeker_signup')
-        else:
-            user=CustomUser.objects.create_user(first_name=first_name,username=user_name,last_name=last_name,email=email,user_type=user_type)
-            user.save()
+         user_name = request.POST['username']
+         firstname = request.POST['firstname']
+         lastname = request.POST['lastname']
+         email = request.POST['email']
+         user_type = request.POST['text']
+         mobile = request.POST['mobile1']
+         dob = request.POST['dob']
+        
+         # Mobile number validation
+         if not re.match(r'^[0-9]{10}$', mobile):
+            messages.error(request, "Mobile number must be 10 digits.")
+            return render(request, 'seeker_signup.html', {
+                'username': user_name, 'email': email, 'text': user_type ,
+                'first_name':firstname, 'last_name':lastname, 'mobile':mobile,
+                'dob':dob
+            })
+         if not re.match(r'^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+$', email):
+                messages.error(request, "Please enter a valid email address.")
+                return render(request, 'seeker_signup.html', {
+                    'username': user_name, 'email': email, 'text': user_type ,
+                    'first_name':firstname, 'last_name':lastname, 'mobile':mobile,
+                    'dob':dob
+            })
+          # Check if username or email already exists
+         if CustomUser.objects.filter(username=user_name).exists():
+            messages.error(request, "This username already exists.")
+            return render(request, 'seeker_signup.html', {
+                'username': user_name, 'email': email, 'text': user_type, 
+                 'first_name':firstname, 'last_name':lastname, 'mobile':mobile,
+                'dob':dob
+            })
+         elif CustomUser.objects.filter(email=email).exists():
+            messages.error(request, "This email already exists.")
+            return render(request, 'seeker_signup.html', {
+                'username': user_name, 'email': email, 'text': user_type ,
+                'first_name':firstname, 'last_name':lastname, 'mobile':mobile,
+                'dob':dob
+               
+            })
 
+        # Create the CustomUser instance
+         user = CustomUser.objects.create_user(username=user_name,first_name=firstname,last_name=lastname, email=email, user_type=user_type)
+         user.save()
+         member = Usermember(
+                mobile=mobile,
+                dob=dob,
+                user=user
+            )
+         member.save()
             
-            mobile=request.POST['mobile1']
-            dob=request.POST['dob']
-            member=Usermember(mobile=mobile,dob=dob,user=user)
-            member.save()
-            return redirect('/')
-    return render(request,'seeker_signup.html')
+            # Add a success message
+         messages.success(request, "Your submission was successful! Wait for admin approval, thank you.")
+         return redirect('seeker_signup')
+            
+    return render(request, 'seeker_signup.html')
+# def add_user(request):
+    
+#     if request.method == 'POST':
+#         user_name = request.POST['username']
+#         email = request.POST['email']
+#         user_type = request.POST['text']
+#         companyname = request.POST['companyname']
+#         mobile = request.POST['mobile1']
+#         logo = request.FILES.get('logo')
+#         website = request.POST['website']
+#         address = request.POST['address']
+
+#         # Mobile number validation
+#         if not re.match(r'^[0-9]{10}$', mobile):
+#             messages.error(request, "Mobile number must be 10 digits.")
+#             return redirect('employeesignup')
+
+#         # Logo validation
+#         if not logo:
+#             messages.error(request, "Please upload your company logo.")
+#             return redirect('employeesignup')
+
+#         # Website validation
+#         if not re.match(r'^https?:\/\/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+([/?].*)?$', website):
+#             messages.error(request, "Please enter a valid URL.")
+#             return redirect('employeesignup')
+
+#         # Address validation
+#         if len(address) < 10:
+#             messages.error(request, "Address must be at least 10 characters long.")
+#             return redirect('employeesignup')
+
+#         # Email validation (must be valid and end with .com)
+#         if not re.match(r'^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+\.com$', email):
+#             messages.error(request, "Please enter a valid email address ending with .com.")
+#             return redirect('employeesignup')
+
+#         # Check if username or email already exists
+#         if CustomUser.objects.filter(username=user_name).exists():
+#             messages.error(request, "This username already exists.")
+#             return redirect('employeesignup')
+#         elif CustomUser.objects.filter(email=email).exists():
+#             messages.error(request, "This email already exists.")
+#             return redirect('employeesignup')
+
+#         # Create the CustomUser instance
+#         user = CustomUser.objects.create_user(username=user_name, email=email, user_type=user_type)
+#         user.save()
+
+#         # Create the Employee instance
+#         member = Employee(
+#             companyname=companyname,
+#             mobile=mobile,
+#             logo=logo,
+#             website=website,
+#             address=address,
+#             user=user
+#         )
+#         member.save()
+#         return redirect('employeesignup')
+#     return render(request, 'employeesignup.html')
 
 
 def add_employee(request):
@@ -98,33 +187,93 @@ def add_employee(request):
         user_name = request.POST['username']
         email = request.POST['email']
         user_type = request.POST['text']
+        companyname = request.POST['companyname']
+        mobile = request.POST['mobile1']
+        logo = request.FILES.get('logo')
+        website = request.POST['website']
+        address = request.POST['address']
 
+        # Mobile number validation
+        if not re.match(r'^[0-9]{10}$', mobile):
+            messages.error(request, "Mobile number must be 10 digits.")
+            return render(request, 'employeesignup.html', {
+                'username': user_name, 'email': email, 'text': user_type, 
+                'companyname': companyname, 'mobile1': mobile, 
+                'website': website, 'address': address
+            })
+
+        # Logo validation
+        if not logo:
+            messages.error(request, "Please upload your company logo.")
+            return render(request, 'employeesignup.html', {
+                'username': user_name, 'email': email, 'text': user_type, 
+                'companyname': companyname, 'mobile1': mobile, 
+                'website': website, 'address': address
+            })
+
+        # Website validation
+        if not re.match(r'^https?:\/\/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+([/?].*)?$', website):
+            messages.error(request, "Please enter a valid URL.")
+            return render(request, 'employeesignup.html', {
+                'username': user_name, 'email': email, 'text': user_type, 
+                'companyname': companyname, 'mobile1': mobile, 
+                'website': website, 'address': address
+            })
+
+        # Address validation
+        if len(address) < 10:
+            messages.error(request, "Address must be at least 10 characters long.")
+            return render(request, 'employeesignup.html', {
+                'username': user_name, 'email': email, 'text': user_type, 
+                'companyname': companyname, 'mobile1': mobile, 
+                'website': website, 'address': address
+            })
+
+        # Email validation (must be valid and end with .com)
+        if not re.match(r'^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+$', email):
+            messages.error(request, "Please enter a valid email address.")
+            return render(request, 'employeesignup.html', {
+                'username': user_name, 'email': email, 'text': user_type, 
+                'companyname': companyname, 'mobile1': mobile, 
+                'website': website, 'address': address
+        })
+
+        # Check if username or email already exists
         if CustomUser.objects.filter(username=user_name).exists():
-            messages.info(request, 'This username already exists')
-            return redirect('employeesignup')
-        else:
-            # Create the CustomUser instance
-            user = CustomUser.objects.create_user(username=user_name, email=email, user_type=user_type)
-            user.save()
+            messages.error(request, "This username already exists.")
+            return render(request, 'employeesignup.html', {
+                'username': user_name, 'email': email, 'text': user_type, 
+                'companyname': companyname, 'mobile1': mobile, 
+                'website': website, 'address': address
+            })
+        elif CustomUser.objects.filter(email=email).exists():
+            messages.error(request, "This email already exists.")
+            return render(request, 'employeesignup.html', {
+                'username': user_name, 'email': email, 'text': user_type, 
+                'companyname': companyname, 'mobile1': mobile, 
+                'website': website, 'address': address
+            })
 
-            # Create the Usermember instance
-            companyname=request.POST['companyname']
-            mobile = request.POST['mobile1']
-            logo = request.FILES['logo']
-            website = request.POST['website']
-            address = request.POST['address']
+        # Create the CustomUser instance
+        user = CustomUser.objects.create_user(username=user_name, email=email, user_type=user_type)
+        user.save()
 
-            member =Employee(
-                companyname=companyname,
-                mobile=mobile,
-                logo=logo,
-                website=website,
-                address=address,
-                user=user
-            )
-            member.save()
-            return redirect('/')
-    return render(request,'employeesignup.html')
+        # Create the Employee instance
+        member = Employee(
+            companyname=companyname,
+            mobile=mobile,
+            logo=logo,
+            website=website,
+            address=address,
+            user=user
+        )
+        member.save()
+        
+        # Add a success message
+        messages.success(request, "Your submission was successful! Wait for admin approval, thank you.")
+        return redirect('employeesignup')
+        
+    return render(request, 'employeesignup.html')
 
 def show_employee(request):
     employees = Employee.objects.all()
@@ -189,7 +338,7 @@ def employeer_home(request):
     applications = JobApplication.objects.filter(job__companyname=employer.companyname)
     
     return render(request, 'employeer_home.html', {'applications': applications})
-    
+
 def admin_approve(request):
     if request.method == 'POST':
         if 'approve_user' in request.POST:
@@ -235,6 +384,22 @@ def admin_approve(request):
             
             employer_registration.is_approved = True
             employer_registration.save()
+
+        elif 'disapprove_user' in request.POST:
+            user_id = request.POST.get('disapprove_user')
+            user_registration = Usermember.objects.get(id=user_id)
+            user = user_registration.user
+            user_registration.delete()
+            user.delete()
+            
+
+        elif 'disapprove_employer' in request.POST:
+            employer_id = request.POST.get('disapprove_employer')
+            employer_registration = Employee.objects.get(id=employer_id)
+            employer = employer_registration.user
+            employer_registration.delete()
+            employer.delete()
+           
 
     users = Usermember.objects.filter(is_approved=False)
     employers = Employee.objects.filter(is_approved=False)

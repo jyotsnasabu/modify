@@ -409,11 +409,12 @@ def emp_view_profile(request):
     employee=Employee.objects.get(user_id=user)
     return render(request,"emp_view_profile.html",{'emp':employee})
 def emp_edit_profilepage(request,pk):
-    
     employee=Employee.objects.get(id=pk)
+
     return render(request,"emp_edit_profile.html",{'emp':employee})
 def emp_edit_profile(request):
      return render(request, 'edit_profile.html')
+
 @login_required
 def emp_editprofile(request, pk):
     emp = get_object_or_404(Employee, pk=pk)
@@ -423,11 +424,12 @@ def emp_editprofile(request, pk):
         # Validate username
         new_username = request.POST.get('username')
         new_email = request.POST.get('email')
+        mobile = request.POST.get('mobile1')
         if not new_username.isalnum():
             messages.error(request, "Username should be alphanumeric.")
-        elif CustomUser.objects.filter(username=new_username).exclude(pk=emp.user.pk).exists():
+        elif CustomUser.objects.filter(username=new_username).exists():
             messages.error(request, "Username is already taken.")
-        elif CustomUser.objects.filter(email=new_email).exclude(pk=emp.user.pk).exists():
+        elif CustomUser.objects.filter(email=new_email).exists():
             messages.error(request, "Email is already taken.")
         else:
             emp.companyname = request.POST.get('companyname')
@@ -452,12 +454,20 @@ def emp_editprofile(request, pk):
                 # Assign the new logo
                 emp.logo = request.FILES['logo']
 
-            emp.user.save()  # Save the related user instance
-            emp.save()  # Save the employer instance with the new logo
+        if not re.match(r'^[0-9]{10}$', mobile):
+            messages.error(request, "Mobile number must be 10 digits.")
+            
+        # Email validation (must be valid and end with .com)
+        if not re.match(r'^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+$', new_email):
+            messages.error(request, "Please enter a valid email address.")
+            return render(request, 'emp_edit_profile.html')
 
-            return redirect('emp_view_profile')
-
+        
+        emp.user.save()  # Save the related user instance
+        emp.save()  # Save the employer instance with the new logo
+ 
     return render(request, 'emp_edit_profile.html', {'emp': emp})
+
 @login_required
 def password_reset_form(request):
     return render(request, 'password_reset_form.html')
@@ -654,6 +664,22 @@ def user_profile(request):
         'usermember': usermember,
         'profile': profile
     }
+     # Mobile number validation
+    if not re.match(r'^[0-9]{10}$', mobile1):
+            messages.error(request, "Mobile number must be 10 digits.")
+            return render(request, 'user_profile.html')
+        # Email validation (must be valid and end with .com)
+    if not re.match(r'^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+$', email):
+            messages.error(request, "Please enter a valid email address.")
+            return render(request, 'user_profile.html')
+
+        # Check if username or email already exists
+    if CustomUser.objects.filter(username=username).exists():
+            messages.error(request, "This username already exists.")
+            return render(request, 'user_profile.html')
+    elif CustomUser.objects.filter(email=email).exists():
+            messages.error(request, "This email already exists.")
+            return render(request, 'user_profile.html')
     return render(request, 'user_profile.html', context)
       
 

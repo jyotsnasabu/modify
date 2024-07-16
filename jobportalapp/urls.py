@@ -21,7 +21,7 @@ urlpatterns = [
     
     path('emp_edit_profilepage/<int:pk>',views.emp_edit_profilepage,name='emp_edit_profilepage'),
     path('emp_editprofile/<int:pk>',views.emp_editprofile,name='emp_editprofile'),
-    path('emp_edit_profile',views.emp_edit_profile,name='emp_edit_profile'),
+    path('emp_edit_profile/<int:pk>',views.emp_edit_profile,name='emp_edit_profile'),
     path('password_reset_form', password_reset_form, name='password_reset_form'),
     # path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'), name='password_reset_complete')
     path('update_password', views.update_password, name='update_password'),

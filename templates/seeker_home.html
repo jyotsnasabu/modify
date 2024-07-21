@@ -183,5 +183,18 @@
             {% endfor %}
         </div>
     </div>
+    <script>
+        function confirmLogout(event) {
+            event.preventDefault(); // Prevent the default link behavior
+
+            // Show a confirmation dialog
+            var confirmation = confirm("Are you sure you want to logout?");
+
+            if (confirmation) {
+                // Redirect to the logout URL (change '/logout/' to your actual logout URL)
+                window.location.href = 'logout';
+            }
+        }
+    </script>
 </body>
 </html>

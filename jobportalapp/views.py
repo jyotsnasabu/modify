@@ -19,7 +19,8 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.files.storage import FileSystemStorage
-import json,re
+import json
+import re
 from django.db.models import Count
 from django.contrib.auth.hashers import make_password
 from django.urls import reverse
@@ -628,7 +629,7 @@ def emp_application(request):
 def user_profile(request):
     try:
         usermember = Usermember.objects.get(user=request.user)
-    except ObjectDoesNotExist: # type: ignore
+    except ObjectDoesNotExist:  # type: ignore
         # Handle the case where the Usermember does not exist
         usermember = Usermember.objects.create(user=request.user)
         
@@ -652,8 +653,33 @@ def user_profile(request):
             profile.resume = request.FILES['resume']
         if 'profileimage' in request.FILES:
             profile.user_img = request.FILES['profileimage']
+
+        # Get the submitted email and mobile number for validation
+        email = request.POST.get('email')
+        mobile = request.POST.get('mobile1')
+
+        # Validate mobile number
+        if not re.match(r'^[0-9]{10}$', mobile):
+            messages.error(request, "Mobile number must be 10 digits.")
+            return render(request, 'user_profile.html', {'usermember': usermember, 'profile': profile})
         
-        # Save changes
+        # Validate email format
+        if not re.match(r'^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+$', email):
+            messages.error(request, "Please enter a valid email address.")
+            return render(request, 'user_profile.html', {'usermember': usermember, 'profile': profile})
+        
+        # Check for existing username
+        username = request.POST.get('user_name')
+        if CustomUser.objects.filter(username=username).exists() and username != request.user.username:
+            messages.error(request, "This username already exists.")
+            return render(request, 'user_profile.html', {'usermember': usermember, 'profile': profile})
+
+        # Check for existing email
+        if CustomUser.objects.filter(email=email).exists() and email != request.user.email:
+            messages.error(request, "This email already exists.")
+            return render(request, 'user_profile.html', {'usermember': usermember, 'profile': profile})
+        
+        # Save changes if validation passes
         usermember.user.save()
         usermember.save()
         profile.save()
@@ -664,22 +690,7 @@ def user_profile(request):
         'usermember': usermember,
         'profile': profile
     }
-     # Mobile number validation
-    if not re.match(r'^[0-9]{10}$', mobile1):
-            messages.error(request, "Mobile number must be 10 digits.")
-            return render(request, 'user_profile.html')
-        # Email validation (must be valid and end with .com)
-    if not re.match(r'^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+$', email):
-            messages.error(request, "Please enter a valid email address.")
-            return render(request, 'user_profile.html')
-
-        # Check if username or email already exists
-    if CustomUser.objects.filter(username=username).exists():
-            messages.error(request, "This username already exists.")
-            return render(request, 'user_profile.html')
-    elif CustomUser.objects.filter(email=email).exists():
-            messages.error(request, "This email already exists.")
-            return render(request, 'user_profile.html')
+    
     return render(request, 'user_profile.html', context)
       
 
@@ -689,9 +700,6 @@ def about(request):
 def logout(request):
     auth.logout(request)
     return redirect('index3')
-
-
-
 
 @login_required
 @csrf_exempt

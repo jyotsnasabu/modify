@@ -336,9 +336,11 @@ def employeer_home(request):
         return HttpResponse("Unauthorized", status=401)
 
     employer = get_object_or_404(Employee, id=employer_id)
+    jobs = Job.objects.filter(user=employer)
+    applications = JobApplication.objects.filter(job__in=jobs)
     applications = JobApplication.objects.filter(job__companyname=employer.companyname)
-    
-    return render(request, 'employeer_home.html', {'applications': applications})
+    pending_applications_count = applications.filter(is_accepted=False, is_rejected=False).count()
+    return render(request, 'employeer_home.html', {'applications': applications,'pending_applications_count': pending_applications_count})
 
 def admin_approve(request):
     if request.method == 'POST':
@@ -457,7 +459,7 @@ def emp_editprofile(request, pk):
 
         if not re.match(r'^[0-9]{10}$', mobile):
             messages.error(request, "Mobile number must be 10 digits.")
-            
+            return render(request, 'emp_edit_profile.html')
         # Email validation (must be valid and end with .com)
         if not re.match(r'^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+$', new_email):
             messages.error(request, "Please enter a valid email address.")

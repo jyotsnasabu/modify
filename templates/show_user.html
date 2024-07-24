@@ -54,6 +54,13 @@
              .pending-count {
                   color: red;
             }
+            .verified {
+            color: #28a745; /* Green color for verified status */
+        }
+
+        .not-verified {
+            color: #dc3545; /* Red color for not verified status */
+        }
           }
     </style>
 </head>
@@ -104,6 +111,13 @@
                 <div class="text-center">
                   <img src="{{ profile.user_img.url }}" class="rounded" style="height:100px; width:100px;">
                 </div>
+                {% if usermember.is_verified %}
+                <span class="verification-status verified">&#10004; Verified user</span>
+            {% else %}
+                <span class="verification-status not-verified">&#10006; Not Verified user</span>
+            {% endif %}
+
+       
                 <h5 class="card-title mt-3">{{ profile.user.username }}</h5>
                 <p class="card-text"><strong>Email:</strong> {{ profile.user.email }}</p>
                 <p class="card-text"><strong>Mobile number:</strong> {{ usermember.mobile }}</p>

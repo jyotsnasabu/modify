@@ -45,7 +45,7 @@
       .content {
         position: fixed;
         margin-left: 250px;
-        margin-top: 90px;
+        margin-top: 150px;
         overflow-x: hidden;
       }
       .align {
@@ -56,7 +56,7 @@
       }
       .container{
         position: relative;
-        margin-top: 290px;
+        top: 130px;
         margin-left: 250px;
       }
     }
@@ -87,7 +87,7 @@
                 <a class="nav-link" style="list-style-type: none;" href="{% url 'jobs' %}">ADD JOBS</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link"href="{% url 'emp_application' %}">APPLICATIONS</a>
+              <a class="nav-link"href="{% url 'emp_application' %}">APPLICATIONS<span class="badge badge-primary">{{ pending_applications_count }}</span></a>
              </li>
             
                <li class="nav-item">
@@ -104,8 +104,8 @@
         </div>
       </nav>
 
-  <div class="container mt-5">
-    <h1>Job Applications <span class="badge badge-primary">{{ total_applications_count }}</span></h1>
+  <div class="container mt-5" >
+    <h1>Job Applications </h1>
     <table class="table table-striped">
       <thead>
         <tr>

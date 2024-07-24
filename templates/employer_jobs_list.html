@@ -42,18 +42,19 @@
               li:hover{
                 background-color: rgb(100, 105, 100);
               }
-             .content{
+             .container{
               position: fixed;
-               margin-left:500px;
-               margin-top:60px;
+              top:100px;
+               margin-left:300px;
                overflow-x: hidden;
+               overflow-y: auto;
              }
              
           }
     </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-custom ">
+  <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
     <img class="img-fluid" height="40" width="50" src="{% static 'images/logo.jpg' %}" alt="">
     <a class="navbar-brand" href="">My Job Portal</a>
        
@@ -103,6 +104,14 @@
                         <h5 class="card-title">{{ job.job_title }}</h5>
                         <p class="card-text"><strong>Company:</strong> {{ job.companyname }}</p>
                         <p class="card-text"><strong>Location:</strong> {{ job.location }}</p>
+                        <p class="card-text"><strong>Job Title:</strong> {{ job.job_title }}</p>
+                        <p class="card-text"><strong>Schedule:</strong> {{ job.job_schedule }}</p>
+                        <p class="card-text"><strong>Type:</strong> {{ job.job_type }}</p>
+                        <p class="card-text"><strong>Description:</strong> {{ job.job_des }}</p>
+                        <p class="card-text"><strong>Salary:</strong> {{ job.job_salary }}</p>
+                        <p class="card-text"><strong>Experience:</strong> {{ job.job_exp }}</p>
+                        <p class="card-text"><strong>Posted on:</strong> {{ job.posted_on }}</p>
+                        
                         <a href="{% url 'employer_job_edit' job.pk %}" class="btn btn-primary">Edit Job</a>
                     </div>
                 </div>

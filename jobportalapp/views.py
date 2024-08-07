@@ -45,7 +45,7 @@ def login1(request):
                 try:
                     employer = Employee.objects.get(user=user)
                     request.session['employer_id'] = employer.id  # Store employer ID in session
-                    messages.info(request, f'Welcome {username}')
+                    # messages.info(request, f'Welcome {username}')
                     return redirect('employeer_home')
                 except Employee.DoesNotExist:
                     messages.error(request, 'Employer profile not found.')
@@ -336,11 +336,11 @@ def employeer_home(request):
         return HttpResponse("Unauthorized", status=401)
 
     employer = get_object_or_404(Employee, id=employer_id)
-    jobs = Job.objects.filter(user=employer)
-    applications = JobApplication.objects.filter(job__in=jobs)
+    # jobs = Job.objects.filter(user=employer)
+    # applications = JobApplication.objects.filter(job__in=jobs)
     applications = JobApplication.objects.filter(job__companyname=employer.companyname)
-    pending_applications_count = applications.filter(is_accepted=False, is_rejected=False).count()
-    return render(request, 'employeer_home.html', {'applications': applications,'pending_applications_count': pending_applications_count})
+    # pending_applications_count = applications.filter(is_accepted=False, is_rejected=False).count()
+    return render(request, 'employeer_home.html', {'applications': applications})
 
 def admin_approve(request):
     if request.method == 'POST':
@@ -428,48 +428,50 @@ def emp_editprofile(request, pk):
         new_username = request.POST.get('username')
         new_email = request.POST.get('email')
         mobile = request.POST.get('mobile1')
+        
+        # Validation checks
         if not new_username.isalnum():
             messages.error(request, "Username should be alphanumeric.")
+            return render(request, 'emp_edit_profile.html', {'emp': emp})
         elif CustomUser.objects.filter(username=new_username).exists():
             messages.error(request, "Username is already taken.")
+            return render(request, 'emp_edit_profile.html', {'emp': emp})
         elif CustomUser.objects.filter(email=new_email).exists():
             messages.error(request, "Email is already taken.")
-        else:
-            emp.companyname = request.POST.get('companyname')
-            emp.user.username = new_username
-            emp.user.first_name = request.POST.get('firstname')
-            emp.user.last_name = request.POST.get('lastname')
-            emp.user.email = request.POST.get('email')
-            emp.mobile = request.POST.get('mobile1')
-            emp.address = request.POST.get('address')
-            emp.website = request.POST.get('website')
-
-            if 'logo' in request.FILES:
-                try:
-                    # Check if the employer has an existing logo
-                    if emp.logo:
-                        # If there's an existing logo, remove it
-                        os.remove(emp.logo.path)
-                        print("Existing image removed successfully")
-                except Exception as e:
-                    print("Error removing existing image:", e)
-
-                # Assign the new logo
-                emp.logo = request.FILES['logo']
-
-        if not re.match(r'^[0-9]{10}$', mobile):
+            return render(request, 'emp_edit_profile.html', {'emp': emp})
+        elif not re.match(r'^[0-9]{10}$', mobile):
             messages.error(request, "Mobile number must be 10 digits.")
-            return render(request, 'emp_edit_profile.html')
-        # Email validation (must be valid and end with .com)
-        if not re.match(r'^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+$', new_email):
+            return render(request, 'emp_edit_profile.html', {'emp': emp})
+        elif not re.match(r'^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+$', new_email):
             messages.error(request, "Please enter a valid email address.")
-            return render(request, 'emp_edit_profile.html')
+            return render(request, 'emp_edit_profile.html', {'emp': emp})
 
-        
+        # If all validations pass, update the employee data
+        emp.companyname = request.POST.get('companyname')
+        emp.user.username = new_username
+        emp.user.first_name = request.POST.get('firstname')
+        emp.user.last_name = request.POST.get('lastname')
+        emp.user.email = new_email
+        emp.mobile = mobile
+        emp.address = request.POST.get('address')
+        emp.website = request.POST.get('website')
+
+        # Handling logo upload
+        if 'logo' in request.FILES:
+            try:
+                if emp.logo:
+                    os.remove(emp.logo.path)  # Remove existing logo
+                    print("Existing image removed successfully")
+            except Exception as e:
+                print("Error removing existing image:", e)
+
+            emp.logo = request.FILES['logo']
+
         emp.user.save()  # Save the related user instance
-        emp.save()  # Save the employer instance with the new logo
- 
+        emp.save()  # Save the employer instance with the new data
+
     return render(request, 'emp_edit_profile.html', {'emp': emp})
+
 
 @login_required
 def password_reset_form(request):

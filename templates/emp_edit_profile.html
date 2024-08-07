@@ -2,122 +2,114 @@
 <html lang="en">
 <head>
   {% load static %}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-    <style>
-        @media (min-width:992px) { 
-          .navbar-brand{
+  <style>
+    @media (min-width:992px) {
+      .navbar-brand {
         height: 60px;
         width: 60px;
       }
       .navbar-custom {
-            background-color: #333; /* Dark background */
-        }
-        .navbar-custom .navbar-brand,
-        .navbar-custom .nav-link {
-            color: #ffffff; /* White text */
-        }
-        .navbar-custom .nav-link:hover {
-            color: #f8f9fa; /* Lighter color on hover */
-        }   
-            .vertical-nav {
-                position: fixed;
-                top: 70px;
-                left: 0;
-                width: 200px;
-                height: 100%;
-                background-color: #f8f8f8;
-                overflow-y: auto;
-                padding-top: 30px
-              }
-              li{
-                border-bottom: 2px solid black;
-                
-              }
-              li:hover{
-                background-color: rgb(100, 105, 100);
-              }
-             .content{
-              position: fixed;
-               margin-left:200px;
-               margin-top:150px;
-               overflow-x: hidden;
-             }
-             .align{
-              margin-left: 280px;
-             }
-             .pending-count {
-                  color: red;
-            }
-            .card{
-              position:relative;
-              top:110px;
-            }
-          }
-    </style>
+        background-color: #333; /* Dark background */
+      }
+      .navbar-custom .navbar-brand,
+      .navbar-custom .nav-link {
+        color: #ffffff; /* White text */
+      }
+      .navbar-custom .nav-link:hover {
+        color: #f8f9fa; /* Lighter color on hover */
+      }
+      .vertical-nav {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 200px;
+        height: 100%;
+        background-color: #f8f8f8;
+        overflow-y: auto;
+        padding-top: 30px;
+      }
+      li {
+        border-bottom: 2px solid black;
+      }
+      li:hover {
+        background-color: rgb(100, 105, 100);
+      }
+      .content {
+        position: fixed;
+        margin-left: 200px;
+        margin-top: 150px;
+        overflow-x: hidden;
+      }
+      .align {
+        margin-left: 280px;
+      }
+      .pending-count {
+        color: red;
+      }
+      .card {
+        position: relative;
+        top: 110px;
+      }
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
     <img class="img-fluid" height="40" width="50" src="{% static 'images/logo.jpg' %}" alt="">
     <a class="navbar-brand" href="">My Job Portal</a>
-       
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                      <span class="navbar-toggler-icon"></span>
-                  </button>
-      
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto flex-column vertical-nav bg-dark ">
-            <li class="nav-item" style="color:#f8f8f8;">
-              Hi, {{ user.username }}
-           </li>
-            <li class="nav-item">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto flex-column vertical-nav bg-dark ">
+        <li class="nav-item" style="color:#f8f8f8;">
+          Hi, {{ user.username }}
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'employeer_home' %}">HOME</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'emp_view_profile' %}">PROFILE</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" style="list-style-type: none;" href="{% url 'jobs' %}">JOBS</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'emp_application' %}">APPLICATIONS</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'password_reset_form' %}">RESET PASSWORD</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'logout' %}">LOGOUT</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
 
-                <a  class="nav-link" href="{% url 'employeer_home' %}">HOME</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link"href="{% url 'emp_view_profile' %}">PROFILE</a>
-          </li>
-               <li class="nav-item">
-                <a class="nav-link" style="list-style-type: none;" href="{% url 'jobs' %}">JOBS</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link"href="{% url 'emp_application' %}">APPLICATIONS</a>
-             </li>
-            
-               <li class="nav-item">
-                <a class="nav-link"href="{% url 'password_reset_form' %}">RESET PASSWORD</a>
-               </li>
-              
-          <li class="nav-item">
-           <a class="nav-link"href="{% url 'logout' %}">LOGOUT</a>
-       </li>
-          </ul>
-      
-        </div>
-      </nav>
- 
   <div class="container mt-5">
-         
     <div class="row">
       <div class="col-md-6 offset-md-3">
         <div class="card">
           <div class="card-header bg-primary text-white">
             Edit Profile
           </div>
-          {% if messages %}
-          <ul class="messages">
-              {% for message in messages %}
-                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-              {% endfor %}
-          </ul>
-      {% endif %}
-
           <div class="card-body">
+            {% if messages %}
+              <div id="messages" style="display: none;">
+                {% for message in messages %}
+                  <span class="alert-message" data-message="{{ message }}"></span>
+                {% endfor %}
+              </div>
+            {% endif %}
+
             <form action="{% url 'emp_editprofile' emp.pk %}" method="post" enctype="multipart/form-data">
               {% csrf_token %}
               <div class="form-group">
@@ -128,21 +120,13 @@
                 <label for="username">User Name:</label>
                 <input type="text" class="form-control" id="username" name="username" value="{{ emp.user.username }}">
               </div>
-              <!-- <div class="form-group">
-                <label for="username">First Name:</label>
-                <input type="text" name="firstname" placeholder="First Name" required value="{{ emp.user.first_name }}">
-            </div>
-            <div class="form-group">
-              <label for="username">Last Name:</label>
-                <input type="text" name="lastname" placeholder="Last Name" required value="{{ emp.user.last_name }}">
-            </div> -->
               <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="email" class="form-control" id="email" name="email" value="{{ emp.user.email }}">
               </div>
               <div class="form-group">
                 <label for="mobile">Mobile Number:</label>
-                <input type="number" class="form-control" id="mobile" name="mobile1" pattern="[0-9]{10}" value="{{ emp.mobile }}">
+                <input type="text" class="form-control" id="mobile" name="mobile1" value="{{ emp.mobile }}">
               </div>
               <div class="form-group">
                 <label for="address">Address:</label>
@@ -155,16 +139,57 @@
               <div class="form-group">
                 <label for="logo">Logo:</label>
                 <input type="file" class="form-control-file" id="logo" name="logo">
-                <img src="{{ emp.logo.url }}" alt="Company Logo" style="height:100px; width:200px; margin-top: 10px;">
+                {% if emp.logo %}
+                  <img src="{{ emp.logo.url }}" alt="Company Logo" style="height:100px; width:200px; margin-top: 10px;">
+                {% endif %}
               </div>
-              <!-- <button type="submit" class="btn btn-primary">Save Changes</button> -->
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+              <button type="button" class="btn btn-primary" id="clickMeButton">Click Me</button>
             </form>
-            <a href="{% url 'emp_view_profile' %}" class="btn btn-primary mt-3">Save Changes</a>
           </div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Modal -->
+  <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="messageModalLabel">Message</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="modalMessageBody">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      // Show alert message when the "Click Me" button is clicked
+      $('#clickMeButton').click(function() {
+        showModal('The button was clicked');
+      });
+
+      // Show all messages as modal popups
+      $('.alert-message').each(function() {
+        var message = $(this).data('message');
+        showModal(message);
+      });
+
+      // Function to show modal with message
+      function showModal(message) {
+        $('#modalMessageBody').text(message);
+        $('#messageModal').modal('show');
+      }
+    });
+  </script>
 </body>
 </html>

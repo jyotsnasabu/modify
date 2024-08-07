@@ -470,7 +470,7 @@ def emp_editprofile(request, pk):
         emp.user.save()  # Save the related user instance
         emp.save()  # Save the employer instance with the new data
 
-    return render(request, 'emp_edit_profile.html', {'emp': emp})
+    return render(request, 'emp_view_profile.html', {'emp': emp})
 
 
 @login_required

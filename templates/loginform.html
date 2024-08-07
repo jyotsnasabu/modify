@@ -138,10 +138,18 @@
             </ul>
         </div>
     </nav> 
+    {% if messages %}
+    <div id="messages" style="display: none;">
+      {% for message in messages %}
+        <span class="alert-message" data-message="{{ message }}"></span>
+      {% endfor %}
+    </div>
+  {% endif %}
     <div class="login-container">
         <h2>Login</h2>
         <form action="{% url 'login1' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
+           
             <div class="form-group">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" required>
